@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PMP Practice Quiz - Development Approach and Life Cycle Performance Domain</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .timer-section {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .timer {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .timer.warning {
+            color: #ff6b6b;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .quiz-info {
+            background: #e3f2fd;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #2196F3;
+        }
+
+        .quiz-info h3 {
+            color: #1976D2;
+            margin-bottom: 10px;
+        }
+
+        .quiz-info ul {
+            margin-left: 20px;
+            color: #555;
+        }
+
+        .quiz-info li {
+            margin: 5px 0;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .question-container {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .question-container.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-header {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 5px solid #667eea;
+        }
+
+        .question-number {
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .question-text {
+            font-size: 1.2em;
+            color: #333;
+            margin: 15px 0;
+            line-height: 1.6;
+        }
+
+        .options {
+            margin: 20px 0;
+        }
+
+        .option {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .option:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .option.correct {
+            background: #51cf66;
+            color: white;
+            border-color: #51cf66;
+        }
+
+        .option.incorrect {
+            background: #ff6b6b;
+            color: white;
+            border-color: #ff6b6b;
+        }
+
+        .option-label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .explanation {
+            display: none;
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 5px solid #ffc107;
+        }
+
+        .explanation.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        .explanation h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .explanation p {
+            color: #856404;
+            line-height: 1.6;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            height: 10px;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.3s;
+        }
+
+        .results {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .results.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 30px auto;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .score-circle .score {
+            font-size: 3em;
+            font-weight: bold;
+        }
+
+        .score-circle .label {
+            font-size: 1.2em;
+        }
+
+        .performance-level {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .performance-level.excellent {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .performance-level.good {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .performance-level.fair {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .performance-level.poor {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .question-review {
+            text-align: left;
+            margin-top: 30px;
+        }
+
+        .review-item {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+        }
+
+        .review-item.correct {
+            border-left-color: #51cf66;
+        }
+
+        .review-item.incorrect {
+            border-left-color: #ff6b6b;
+        }
+
+        .start-screen {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .start-screen h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .start-screen .btn {
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+
+            .question-text {
+                font-size: 1em;
+            }
+
+            .navigation {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-tasks"></i> PMP Practice Quiz</h1>
+            <p>Development Approach and Life Cycle Performance Domain (PMBOK 7th Edition)</p>
+        </div>
+
+        <div class="timer-section" id="timerSection" style="display: none;">
+            <div class="timer" id="timer">25:00</div>
+            <p>Time Remaining</p>
+        </div>
+
+        <div class="content">
+            <div class="start-screen" id="startScreen">
+                <h2>Welcome to the Development Approach and Life Cycle Performance Domain Quiz</h2>
+                <div class="quiz-info">
+                    <h3><i class="fas fa-info-circle"></i> Quiz Information</h3>
+                    <ul>
+                        <li><strong>Number of Questions:</strong> 15</li>
+                        <li><strong>Time Limit:</strong> 25 minutes</li>
+                        <li><strong>Passing Score:</strong> 70% (11 out of 15)</li>
+                        <li><strong>Question Types:</strong> Multiple choice, scenario-based, and calculation questions</li>
+                        <li><strong>Topics Covered:</strong> Development approaches (Predictive, Adaptive, Hybrid), project life cycles, delivery cadence, and approach selection</li>
+                    </ul>
+                </div>
+                <button class="btn btn-primary" onclick="startQuiz()">
+                    <i class="fas fa-play"></i> Start Quiz
+                </button>
+            </div>
+
+            <div id="quizContent" style="display: none;">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar"></div>
+                </div>
+
+                <!-- Questions will be inserted here -->
+                <div id="questionsContainer"></div>
+
+                <div class="navigation">
+                    <button class="btn btn-secondary" id="prevBtn" onclick="previousQuestion()" disabled>
+                        <i class="fas fa-arrow-left"></i> Previous
+                    </button>
+                    <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">
+                        Next <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button class="btn btn-primary" id="submitBtn" onclick="submitQuiz()" style="display: none;">
+                        <i class="fas fa-check"></i> Submit Quiz
+                    </button>
+                </div>
+            </div>
+
+            <div class="results" id="results"></div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "A financial services company is developing a new compliance system where regulatory requirements are well-defined and unlikely to change. The project has clear scope, fixed budget, and established technical standards. Which development approach would be MOST appropriate according to the Development Approach and Life Cycle Performance Domain?",
+                options: [
+                    "Adaptive approach with iterative sprints",
+                    "Predictive approach with detailed upfront planning",
+                    "Hybrid approach combining multiple methodologies",
+                    "Lean approach focusing on waste elimination"
+                ],
+                correct: 1,
+                explanation: "The predictive approach (waterfall) is most appropriate when scope, costs, resources, and risks can be clearly defined at the earliest stages of a project. In this scenario, the regulatory requirements are well-defined and unlikely to change, making it ideal for detailed upfront planning. The predictive approach is used when uncertainty level is minimal and the life cycle is stable. Adaptive approaches are better for volatile requirements, while hybrid approaches are used when there are mixed certainty levels around different aspects of the project."
+            },
+            {
+                question: "A software development project uses agile methodology with 2-week sprints. The team has an average velocity of 40 story points per sprint and allocates 15% of capacity for technical debt and bug fixes. If the remaining product backlog contains 340 story points, how many sprints are needed to complete the project using the formula I = N / (V × (1 - B))?",
+                options: [
+                    "10 sprints",
+                    "12 sprints",
+                    "11 sprints",
+                    "9 sprints"
+                ],
+                correct: 0,
+                explanation: "Using the formula I = N / (V × (1 - B)), where I = iterations (sprints), N = total story points (340), V = velocity (40), and B = buffer percentage (15% = 0.15): Available capacity = 40 × (1 - 0.15) = 40 × 0.85 = 34 story points per sprint. Number of sprints = 340 / 34 = 10 sprints. This calculation accounts for the capacity allocated to technical debt and bug fixes while determining the number of iterations needed to complete the remaining work."
+            },
+            {
+                question: "A construction company is building a residential complex where the foundation and structural work follow traditional engineering standards, but the interior design and finishing will evolve based on homeowner preferences. Which development approach would BEST suit this project according to the Development Approach and Life Cycle Performance Domain?",
+                options: [
+                    "Pure predictive (waterfall) approach for all phases",
+                    "Pure adaptive (agile) approach for all phases",
+                    "Hybrid approach with predictive for construction and adaptive for finishing",
+                    "Lean approach focusing on rapid delivery"
+                ],
+                correct: 2,
+                explanation: "The hybrid approach is most appropriate for this project because it combines predictive elements for the well-defined construction phases (foundation and structural work) with adaptive elements for the evolving interior design and finishing work. The Development Approach and Life Cycle Performance Domain recognizes that projects can benefit from combining methodologies when different aspects have different levels of uncertainty. A pure predictive approach would be too rigid for the homeowner preference-driven phases, while a pure adaptive approach would be inefficient for the standard construction phases."
+            },
+            {
+                question: "A mobile app development project requires weekly releases to test market response, with features being added based on user feedback and performance metrics. What type of delivery cadence is being used according to the Development Approach and Life Cycle Performance Domain?",
+                options: [
+                    "Single delivery at project completion",
+                    "Multiple deliveries at irregular intervals",
+                    "Periodic deliveries on a fixed schedule",
+                    "Continuous delivery without fixed releases"
+                ],
+                correct: 2,
+                explanation: "Periodic deliveries follow a fixed and regular delivery schedule, which matches the weekly releases described in the scenario. According to the Development Approach and Life Cycle Performance Domain, periodic deliveries are similar to multiple deliveries but follow a fixed and regular delivery schedule. This is different from single delivery (one-time at completion) or multiple deliveries (irregular intervals). Continuous delivery would imply more frequent than weekly releases without fixed timing."
+            },
+            {
+                question: "During the feasibility phase of a pharmaceutical research project, the team discovers that the initial scientific assumptions may not be valid. The project requirements are highly uncertain and the technology is rapidly evolving. Which development approach should the project manager recommend?",
+                options: [
+                    "Predictive approach with detailed phase gates",
+                    "Adaptive approach with flexible scope and iterative development",
+                    "Hybrid approach with predictive planning but adaptive execution",
+                    "Incremental approach with fixed scope but flexible timeline"
+                ],
+                correct: 1,
+                explanation: "The adaptive approach is most appropriate for projects with high uncertainty, rapidly evolving requirements, and emerging technologies. In pharmaceutical research with uncertain scientific assumptions, the ability to adapt based on learning and feedback is crucial. The adaptive approach allows for flexibility in scope, iterative development, and continuous stakeholder involvement. Predictive approaches work poorly when requirements are uncertain, and hybrid approaches may add unnecessary complexity when the entire project needs flexibility."
+            },
+            {
+                question: "A government infrastructure project has strict regulatory compliance requirements and fixed funding but allows for some flexibility in construction methods. The project manager is considering the development approach. What would be the MOST appropriate choice?",
+                options: [
+                    "Fully adaptive approach to maximize flexibility",
+                    "Hybrid approach with predictive for compliance and adaptive for methods",
+                    "Predictive approach for all aspects to ensure control",
+                    "Lean approach to minimize costs and maximize efficiency"
+                ],
+                correct: 1,
+                explanation: "The hybrid approach is most appropriate because it allows the project to maintain predictive control over regulatory compliance and funding requirements while providing adaptive flexibility for construction methods. The Development Approach and Life Cycle Performance Domain emphasizes selecting approaches based on project characteristics. A fully adaptive approach would be too risky for strict regulatory compliance, while a fully predictive approach would be too rigid for construction method flexibility. The hybrid approach balances these competing needs effectively."
+            },
+            {
+                question: "An e-commerce platform project will deliver payment processing in month 1, inventory management in month 2, customer analytics in month 3, and marketing automation in month 4. What type of delivery pattern does this represent according to the Development Approach and Life Cycle Performance Domain?",
+                options: [
+                    "Single delivery pattern",
+                    "Multiple delivery pattern",
+                    "Periodic delivery pattern",
+                    "Continuous delivery pattern"
+                ],
+                correct: 1,
+                explanation: "This represents a multiple delivery pattern where various components are delivered at different points in time, not necessarily in regular periods. According to the Development Approach and Life Cycle Performance Domain, multiple deliveries feature various components delivered at different points in time. This differs from single delivery (one-time at end) or periodic deliveries (fixed regular schedule like weekly or monthly). The quarterly but specifically sequenced delivery of different functional modules fits the multiple delivery pattern definition."
+            },
+            {
+                question: "A project manager is selecting a development approach for a new enterprise software implementation. The business processes are well-defined and stable, but the user interface and experience features need to evolve based on stakeholder feedback. What is the BEST development approach?",
+                options: [
+                    "Predictive approach for the entire project",
+                    "Adaptive approach for the entire project",
+                    "Hybrid approach with predictive for business processes and adaptive for UI/UX",
+                    "Iterative approach with fixed scope but flexible timeline"
+                ],
+                correct: 2,
+                explanation: "The hybrid approach is best because it combines predictive elements for the stable, well-defined business processes with adaptive elements for the evolving UI/UX features that require stakeholder feedback. The Development Approach and Life Cycle Performance Domain recognizes that different project components may have different levels of uncertainty and require different approaches. Using a single approach for the entire project would either be too rigid (predictive) or too uncontrolled (adaptive) for this mixed-uncertainty scenario."
+            },
+            {
+                question: "A technology startup is developing a revolutionary AI product in a rapidly evolving market with unknown customer preferences and emerging technologies. The team needs to pivot quickly based on market feedback. Which life cycle approach aligns BEST with the Development Approach and Life Cycle Performance Domain principles?",
+                options: [
+                    "Predictive life cycle with detailed upfront requirements",
+                    "Adaptive life cycle with iterative development and frequent feedback",
+                    "Hybrid life cycle with initial predictive planning and adaptive execution",
+                    "Incremental life cycle with predetermined feature sets"
+                ],
+                correct: 1,
+                explanation: "The adaptive life cycle is best suited for revolutionary products in rapidly evolving markets with unknown preferences and emerging technologies. According to the Development Approach and Life Cycle Performance Domain, adaptive approaches are used when project requirements are subject to high uncertainty and volatility, and when feedback from users and stakeholders needs to be collected repeatedly. The ability to pivot quickly based on market feedback is a key characteristic of adaptive approaches, making them ideal for this scenario."
+            },
+            {
+                question: "A project team is working on a cybersecurity system that must comply with federal regulations (predictive component) while also needing to respond quickly to emerging threat patterns (adaptive component). Which development approach should be selected according to the Development Approach and Life Cycle Performance Domain?",
+                options: [
+                    "Pure predictive to ensure regulatory compliance",
+                    "Pure adaptive to respond to threats quickly",
+                    "Hybrid approach separating compliant components from adaptive components",
+                    "Iterative approach with frequent regulatory reviews"
+                ],
+                correct: 2,
+                explanation: "The hybrid approach is most appropriate for this cybersecurity project because it allows the team to use predictive methods for components that must comply with federal regulations (requiring detailed documentation and validation) while using adaptive methods for threat response components that need rapid evolution. The Development Approach and Life Cycle Performance Domain emphasizes that hybrid approaches combine predictive and adaptive elements to handle mixed uncertainty levels. This approach ensures both regulatory compliance and rapid threat response capabilities."
+            },
+            {
+                question: "A manufacturing company produces monthly reports for its stakeholders with consistent formatting and delivery schedule. According to the Development Approach and Life Cycle Performance Domain, this represents which type of delivery pattern?",
+                options: [
+                    "Single delivery at project completion",
+                    "Multiple deliveries at varying intervals",
+                    "Periodic deliveries on a fixed schedule",
+                    "Continuous delivery stream"
+                ],
+                correct: 2,
+                explanation: "This represents periodic deliveries because the reports follow a fixed and regular monthly delivery schedule. According to the Development Approach and Life Cycle Performance Domain, periodic deliveries are similar to multiple deliveries but follow a fixed and regular delivery schedule, like a weekly newspaper or monthly newsletter. The consistent monthly timing and formatting make this a clear example of periodic delivery pattern rather than irregular multiple deliveries or one-time single delivery."
+            },
+            {
+                question: "During project planning, the project manager must select between development approaches. The project has clear business objectives but uncertain technical implementation. The organization has experience with waterfall but needs to innovate to stay competitive. What should guide the approach selection according to the Development Approach and Life Cycle Performance Domain?",
+                options: [
+                    "Organizational preference and experience should be the primary factor",
+                    "Project characteristics including uncertainty and requirements clarity should drive selection",
+                    "Stakeholder convenience and comfort level with familiar approaches",
+                    "Budget and timeline constraints should be the only considerations"
+                ],
+                correct: 1,
+                explanation: "According to the Development Approach and Life Cycle Performance Domain, project characteristics including uncertainty levels, requirements clarity, and project nature should drive approach selection. While organizational experience, stakeholder preferences, and constraints are important considerations, they should not override the fundamental need to match the approach to project characteristics. The key principle is selecting the approach that best fits the project's unique context, not defaulting to familiar methods or letting secondary factors dominate the decision."
+            },
+            {
+                question: "An agile team has 5 members working 8 hours per day. They allocate 6 hours per day to development work and reserve 2 hours for meetings, planning, and overhead. If their average velocity is 20 story points per 2-week sprint, and they have 120 story points remaining, how many sprints are needed considering the actual development capacity?",
+                options: [
+                    "6 sprints",
+                    "7 sprints",
+                    "5 sprints",
+                    "8 sprints"
+                ],
+                correct: 0,
+                explanation: "The velocity already accounts for the actual development capacity (since velocity is measured based on actual completed work, not theoretical capacity). With a velocity of 20 story points per sprint and 120 story points remaining, the calculation is straightforward: 120 story points ÷ 20 story points per sprint = 6 sprints. The allocation of 6 hours for development out of 8 hours per day is already reflected in the measured velocity, so we don't need to adjust for it again. This is an important concept in agile estimation - velocity represents the team's actual sustainable capacity."
+            },
+            {
+                question: "A project manager is transitioning from a predictive to an adaptive approach mid-project due to changing requirements. What is the MOST important consideration according to the Development Approach and Life Cycle Performance Domain?",
+                options: [
+                    "Maintaining the original timeline and budget",
+                    "Ensuring team training and stakeholder alignment with the new approach",
+                    "Keeping all original documentation and processes",
+                    "Minimizing disruption to existing governance structures"
+                ],
+                correct: 1,
+                explanation: "When transitioning between development approaches, ensuring team training and stakeholder alignment with the new approach is the most critical consideration. The Development Approach and Life Cycle Performance Domain emphasizes that different approaches require different skills, mindsets, and engagement patterns. Without proper training and alignment, the transition will likely fail regardless of timeline, budget, or documentation considerations. Team members need to understand new roles, responsibilities, and practices, while stakeholders need to adjust their expectations and involvement patterns."
+            },
+            {
+                question: "A software project will deliver a complete system to a single client at the end of the project. The client wants to review progress but will only accept the final integrated product. What delivery pattern and development approach combination would be MOST appropriate according to the Development Approach and Life Cycle Performance Domain?",
+                options: [
+                    "Single delivery with adaptive approach",
+                    "Single delivery with predictive approach",
+                    "Multiple deliveries with adaptive approach",
+                    "Periodic deliveries with hybrid approach"
+                ],
+                correct: 1,
+                explanation: "Single delivery with predictive approach is most appropriate because the client will only accept the final integrated product at project completion. According to the Development Approach and Life Cycle Performance Domain, single delivery involves product or service distribution on a single instance, usually at the end of the project. The predictive approach is suitable when the final deliverable is well-defined and will be accepted as a complete system. While the client wants to review progress, they won't accept incremental deliveries, making multiple or periodic deliveries inappropriate."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let userAnswers = [];
+        let quizStartTime;
+        let timerInterval;
+        let timeRemaining = 25 * 60; // 25 minutes in seconds
+
+        function startQuiz() {
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('quizContent').style.display = 'block';
+            document.getElementById('timerSection').style.display = 'block';
+            
+            quizStartTime = Date.now();
+            startTimer();
+            renderQuestions();
+            showQuestion(0);
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay();
+                
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    submitQuiz();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            const timerElement = document.getElementById('timer');
+            timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            if (timeRemaining <= 300) { // 5 minutes warning
+                timerElement.classList.add('warning');
+            }
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+
+            questions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-container';
+                questionDiv.id = `question-${index}`;
+                
+                let optionsHTML = '';
+                q.options.forEach((option, optIndex) => {
+                    optionsHTML += `
+                        <div class="option" onclick="selectOption(${index}, ${optIndex})">
+                            <span class="option-label">${String.fromCharCode(65 + optIndex)}.</span>
+                            <span class="option-text">${option}</span>
+                        </div>
+                    `;
+                });
+
+                questionDiv.innerHTML = `
+                    <div class="question-header">
+                        <span class="question-number">Question ${index + 1} of ${questions.length}</span>
+                    </div>
+                    <div class="question-text">${q.question}</div>
+                    <div class="options" id="options-${index}">
+                        ${optionsHTML}
+                    </div>
+                    <div class="explanation" id="explanation-${index}">
+                        <h4><i class="fas fa-lightbulb"></i> Explanation</h4>
+                        <p>${q.explanation}</p>
+                    </div>
+                `;
+
+                container.appendChild(questionDiv);
+            });
+        }
+
+        function selectOption(questionIndex, optionIndex) {
+            userAnswers[questionIndex] = optionIndex;
+            
+            const options = document.querySelectorAll(`#options-${questionIndex} .option`);
+            options.forEach((opt, idx) => {
+                opt.classList.remove('selected');
+                if (idx === optionIndex) {
+                    opt.classList.add('selected');
+                }
+            });
+        }
+
+        function showQuestion(index) {
+            document.querySelectorAll('.question-container').forEach(q => {
+                q.classList.remove('active');
+            });
+            
+            document.getElementById(`question-${index}`).classList.add('active');
+            currentQuestion = index;
+            
+            updateProgress();
+            updateNavigationButtons();
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function updateNavigationButtons() {
+            document.getElementById('prevBtn').disabled = currentQuestion === 0;
+            
+            if (currentQuestion === questions.length - 1) {
+                document.getElementById('nextBtn').style.display = 'none';
+                document.getElementById('submitBtn').style.display = 'block';
+            } else {
+                document.getElementById('nextBtn').style.display = 'block';
+                document.getElementById('submitBtn').style.display = 'none';
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                showQuestion(currentQuestion - 1);
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                showQuestion(currentQuestion + 1);
+            }
+        }
+
+        function submitQuiz() {
+            clearInterval(timerInterval);
+            
+            let correctCount = 0;
+            questions.forEach((q, index) => {
+                const options = document.querySelectorAll(`#options-${index} .option`);
+                options.forEach((opt, optIndex) => {
+                    if (optIndex === q.correct) {
+                        opt.classList.add('correct');
+                    } else if (optIndex === userAnswers[index]) {
+                        opt.classList.add('incorrect');
+                    }
+                });
+                
+                document.getElementById(`explanation-${index}`).classList.add('show');
+                
+                if (userAnswers[index] === q.correct) {
+                    correctCount++;
+                }
+            });
+
+            const percentage = (correctCount / questions.length) * 100;
+            showResults(correctCount, percentage);
+        }
+
+        function showResults(correctCount, percentage) {
+            document.getElementById('quizContent').style.display = 'none';
+            document.getElementById('timerSection').style.display = 'none';
+            
+            let performanceLevel = '';
+            let performanceClass = '';
+            
+            if (percentage >= 90) {
+                performanceLevel = 'Excellent! Outstanding Performance!';
+                performanceClass = 'excellent';
+            } else if (percentage >= 70) {
+                performanceLevel = 'Good! You Passed!';
+                performanceClass = 'good';
+            } else if (percentage >= 50) {
+                performanceLevel = 'Fair - More Study Needed';
+                performanceClass = 'fair';
+            } else {
+                performanceLevel = 'Needs Improvement';
+                performanceClass = 'poor';
+            }
+
+            let reviewHTML = '<div class="question-review"><h3>Question Review</h3>';
+            questions.forEach((q, index) => {
+                const isCorrect = userAnswers[index] === q.correct;
+                const userAnswerText = userAnswers[index] !== undefined ? q.options[userAnswers[index]] : 'Not answered';
+                const correctAnswerText = q.options[q.correct];
+                
+                reviewHTML += `
+                    <div class="review-item ${isCorrect ? 'correct' : 'incorrect'}">
+                        <strong>Question ${index + 1}:</strong> ${isCorrect ? '<i class="fas fa-check-circle" style="color: #51cf66;"></i>' : '<i class="fas fa-times-circle" style="color: #ff6b6b;"></i>'}
+                        <p><strong>Your answer:</strong> ${userAnswerText}</p>
+                        ${!isCorrect ? `<p><strong>Correct answer:</strong> ${correctAnswerText}</p>` : ''}
+                    </div>
+                `;
+            });
+            reviewHTML += '</div>';
+
+            document.getElementById('results').innerHTML = `
+                <h2><i class="fas fa-trophy"></i> Quiz Complete!</h2>
+                <div class="score-circle">
+                    <div class="score">${correctCount}/${questions.length}</div>
+                    <div class="label">${percentage.toFixed(1)}%</div>
+                </div>
+                <div class="performance-level ${performanceClass}">
+                    ${performanceLevel}
+                </div>
+                <p style="font-size: 1.1em; color: #666; margin: 20px 0;">
+                    You answered ${correctCount} out of ${questions.length} questions correctly.
+                </p>
+                ${reviewHTML}
+                <button class="btn btn-primary" onclick="location.reload()">
+                    <i class="fas fa-redo"></i> Retake Quiz
+                </button>
+            `;
+            
+            document.getElementById('results').classList.add('show');
+        }
+    </script>
+</body>
+</html>

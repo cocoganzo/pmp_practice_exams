@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PMP Practice Quiz - Project Work Performance Domain</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .timer-section {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .timer {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .timer.warning {
+            color: #ff6b6b;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .quiz-info {
+            background: #e3f2fd;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #2196F3;
+        }
+
+        .quiz-info h3 {
+            color: #1976D2;
+            margin-bottom: 10px;
+        }
+
+        .quiz-info ul {
+            margin-left: 20px;
+            color: #555;
+        }
+
+        .quiz-info li {
+            margin: 5px 0;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .question-container {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .question-container.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-header {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 5px solid #667eea;
+        }
+
+        .question-number {
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .question-text {
+            font-size: 1.2em;
+            color: #333;
+            margin: 15px 0;
+            line-height: 1.6;
+        }
+
+        .options {
+            margin: 20px 0;
+        }
+
+        .option {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .option:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .option.correct {
+            background: #51cf66;
+            color: white;
+            border-color: #51cf66;
+        }
+
+        .option.incorrect {
+            background: #ff6b6b;
+            color: white;
+            border-color: #ff6b6b;
+        }
+
+        .option-label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .explanation {
+            display: none;
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 5px solid #ffc107;
+        }
+
+        .explanation.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        .explanation h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .explanation p {
+            color: #856404;
+            line-height: 1.6;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            height: 10px;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.3s;
+        }
+
+        .results {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .results.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 30px auto;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .score-circle .score {
+            font-size: 3em;
+            font-weight: bold;
+        }
+
+        .score-circle .label {
+            font-size: 1.2em;
+        }
+
+        .performance-level {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .performance-level.excellent {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .performance-level.good {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .performance-level.fair {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .performance-level.poor {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .question-review {
+            text-align: left;
+            margin-top: 30px;
+        }
+
+        .review-item {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+        }
+
+        .review-item.correct {
+            border-left-color: #51cf66;
+        }
+
+        .review-item.incorrect {
+            border-left-color: #ff6b6b;
+        }
+
+        .start-screen {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .start-screen h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .start-screen .btn {
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+
+            .question-text {
+                font-size: 1em;
+            }
+
+            .navigation {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-tasks"></i> PMP Practice Quiz</h1>
+            <p>Project Work Performance Domain (PMBOK 7th Edition)</p>
+        </div>
+
+        <div class="timer-section" id="timerSection" style="display: none;">
+            <div class="timer" id="timer">25:00</div>
+            <p>Time Remaining</p>
+        </div>
+
+        <div class="content">
+            <div class="start-screen" id="startScreen">
+                <h2>Welcome to the Project Work Performance Domain Quiz</h2>
+                <div class="quiz-info">
+                    <h3><i class="fas fa-info-circle"></i> Quiz Information</h3>
+                    <ul>
+                        <li><strong>Number of Questions:</strong> 15</li>
+                        <li><strong>Time Limit:</strong> 25 minutes</li>
+                        <li><strong>Passing Score:</strong> 70% (11 out of 15)</li>
+                        <li><strong>Question Types:</strong> Multiple choice, scenario-based, and calculation questions</li>
+                        <li><strong>Topics Covered:</strong> Process management, communication, physical resources, procurement, change management, learning, and earned value management</li>
+                    </ul>
+                </div>
+                <button class="btn btn-primary" onclick="startQuiz()">
+                    <i class="fas fa-play"></i> Start Quiz
+                </button>
+            </div>
+
+            <div id="quizContent" style="display: none;">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar"></div>
+                </div>
+
+                <!-- Questions will be inserted here -->
+                <div id="questionsContainer"></div>
+
+                <div class="navigation">
+                    <button class="btn btn-secondary" id="prevBtn" onclick="previousQuestion()" disabled>
+                        <i class="fas fa-arrow-left"></i> Previous
+                    </button>
+                    <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">
+                        Next <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button class="btn btn-primary" id="submitBtn" onclick="submitQuiz()" style="display: none;">
+                        <i class="fas fa-check"></i> Submit Quiz
+                    </button>
+                </div>
+            </div>
+
+            <div class="results" id="results"></div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "A project manager is establishing processes for a new software development project. The team has experience with both Agile and Waterfall methodologies. Which approach best aligns with the Project Work Performance Domain's emphasis on process customization?",
+                options: [
+                    "Implement a strict Waterfall approach since it provides the most structure",
+                    "Use pure Agile methodology as it's the most modern approach",
+                    "Tailor processes based on project needs, team capabilities, and organizational context",
+                    "Copy processes from the most recent successful project in the organization"
+                ],
+                correct: 2,
+                explanation: "The Project Work Performance Domain emphasizes process customization to optimize work according to the project's specific needs. The correct approach is to tailor processes based on project needs, team capabilities, and organizational context. Simply copying processes or rigidly following one methodology without considering the project's unique characteristics goes against the principle of customization. Effective processes should be both efficient and effective, adhering to quality requirements while producing desired results."
+            },
+            {
+                question: "During project execution, the project manager notices that team members are experiencing burnout due to uneven workload distribution. According to the Project Work Performance Domain, what should be the PRIMARY focus to address this issue?",
+                options: [
+                    "Hire additional team members to reduce the overall workload",
+                    "Extend project deadlines to reduce pressure on the team",
+                    "Balance workload and monitor team motivation and satisfaction",
+                    "Implement mandatory overtime to meet deadlines"
+                ],
+                correct: 2,
+                explanation: "The Project Work Performance Domain emphasizes keeping project team motivation and concentration high through workload balance and employee satisfaction. The primary focus should be on balancing workload and monitoring team motivation and satisfaction. While hiring additional resources or extending deadlines might be solutions, they don't directly address the root cause of uneven workload distribution. Mandatory overtime would likely worsen burnout rather than resolve it."
+            },
+            {
+                question: "A project has an Earned Value (EV) of $180,000, Planned Value (PV) of $200,000, and Actual Cost (AC) of $190,000. What is the Schedule Performance Index (SPI) and what does it indicate?",
+                options: [
+                    "SPI = 0.90, indicating the project is behind schedule",
+                    "SPI = 1.11, indicating the project is ahead of schedule",
+                    "SPI = 0.95, indicating the project is slightly behind schedule",
+                    "SPI = 1.05, indicating the project is slightly ahead of schedule"
+                ],
+                correct: 0,
+                explanation: "Schedule Performance Index (SPI) = EV / PV = $180,000 / $200,000 = 0.90. An SPI less than 1.0 indicates the project is behind schedule. Specifically, an SPI of 0.90 means the project is earning only 90 cents of value for every dollar of work that was planned to be completed. This is a significant schedule variance that requires attention from the project manager."
+            },
+            {
+                question: "A manufacturing project requires specialized equipment that must be procured from external suppliers. The organization has strict procurement policies. What is the MOST important consideration when working with suppliers in the Project Work Performance Domain?",
+                options: [
+                    "Always select the lowest-cost supplier to minimize project expenses",
+                    "Follow organizational procurement policies and procedures while ensuring supplier capability",
+                    "Bypass procurement policies to accelerate the procurement process",
+                    "Negotiate contracts independently without involving the procurement department"
+                ],
+                correct: 1,
+                explanation: "The Project Work Performance Domain emphasizes that organizations typically have rigorous policies and procedures regarding procurement. These define who has authority to enter contracts, limits of that authority, and processes to follow. The most important consideration is to follow organizational procurement policies and procedures while ensuring supplier capability. Bypassing policies or negotiating independently violates organizational governance, while selecting solely based on cost ignores quality and capability considerations."
+            },
+            {
+                question: "During a project retrospective meeting, the team identifies several process improvements that could benefit future projects. According to the Project Work Performance Domain, what should the project manager do with these insights?",
+                options: [
+                    "Keep the insights confidential within the project team",
+                    "Document lessons learned and share them for organizational learning",
+                    "Wait until project completion to document any lessons learned",
+                    "Only share lessons learned if the project was successful"
+                ],
+                correct: 1,
+                explanation: "The Project Work Performance Domain emphasizes enabling learning and knowledge transfer during and after the project. Lessons learned should be documented and shared for organizational learning, regardless of project success or failure. These retrospective meetings should occur regularly throughout the project, not just at completion. The insights should be shared across the organization to improve future project performance, not kept confidential within the team."
+            },
+            {
+                question: "A project manager is managing physical resources for a construction project. Which of the following goals best aligns with the Project Work Performance Domain's approach to physical resource management?",
+                options: [
+                    "Maximize on-site material storage to ensure availability",
+                    "Minimize waste, eliminate waiting time for materials, and ensure a safe working environment",
+                    "Focus solely on cost reduction regardless of safety considerations",
+                    "Maintain large inventory buffers to prevent any potential delays"
+                ],
+                correct: 1,
+                explanation: "The Project Work Performance Domain identifies specific goals for physical resource management: reducing or eliminating on-site material handling and storage, eliminating waiting time for materials, minimizing waste and wastage, and ensuring a safe working environment. The correct answer encompasses these key goals. Maximizing on-site storage and maintaining large inventory buffers contradict the goal of reducing on-site handling and storage. Focusing solely on cost reduction while ignoring safety violates the requirement to ensure a safe working environment."
+            },
+            {
+                question: "A project experiences a significant scope change requested by a key stakeholder. According to the Project Work Performance Domain, what is the FIRST step the project manager should take?",
+                options: [
+                    "Immediately implement the change to satisfy the stakeholder",
+                    "Reject the change to maintain the original project scope",
+                    "Assess the impact on staffing, resources, budget, and timelines",
+                    "Escalate the decision to senior management"
+                ],
+                correct: 2,
+                explanation: "The Project Work Performance Domain emphasizes that any project will inevitably face changes and that appropriate adjustments in staffing, resources, budget, timelines, etc., must support these changes. The first step is to assess the impact on staffing, resources, budget, and timelines. The project manager must understand the full implications before implementing, rejecting, or escalating the change. This assessment enables informed decision-making and proper change management."
+            },
+            {
+                question: "A project team is using multiple communication channels including formal reports, informal conversations, team meetings, and electronic archives. Which principle from the Project Work Performance Domain does this demonstrate?",
+                options: [
+                    "Inefficient communication that should be standardized to one channel",
+                    "Appropriate use of different communication channels based on stakeholder needs",
+                    "Over-communication that wastes project resources",
+                    "Lack of communication planning and structure"
+                ],
+                correct: 1,
+                explanation: "The Project Work Performance Domain recognizes that communication can be formal and informal, verbal and written, and that different channels of communication and involvement may be used depending on the stakeholders. Using multiple communication channels demonstrates appropriate adaptation to stakeholder needs. Information can be shared in meetings, conversations, electronic archives, etc., as needed. This flexibility in communication methods is a strength, not a weakness, as long as it serves the project's communication objectives."
+            },
+            {
+                question: "A project has a Budget at Completion (BAC) of $500,000, Earned Value (EV) of $300,000, and Actual Cost (AC) of $350,000. What is the Estimate at Completion (EAC) assuming current performance continues?",
+                options: [
+                    "$583,333",
+                    "$550,000",
+                    "$650,000",
+                    "$500,000"
+                ],
+                correct: 0,
+                explanation: "When assuming current performance continues, EAC = BAC / CPI. First, calculate CPI = EV / AC = $300,000 / $350,000 = 0.857. Then, EAC = $500,000 / 0.857 = $583,333. This formula assumes that the cost performance experienced to date will continue for the remainder of the project. The EAC of $583,333 indicates the project is expected to exceed the original budget by $83,333 if current cost performance trends continue."
+            },
+            {
+                question: "During project execution, the project manager discovers that a critical process is not producing the desired quality outcomes. What should be the PRIMARY consideration when evaluating this process according to the Project Work Performance Domain?",
+                options: [
+                    "Whether the process is the fastest available option",
+                    "Whether the process is both efficient and effective in meeting quality requirements",
+                    "Whether the process is the least expensive to implement",
+                    "Whether the process is the most commonly used in the industry"
+                ],
+                correct: 1,
+                explanation: "The Project Work Performance Domain emphasizes that processes should be both efficient and effective. This means they should adhere to quality requirements, regulations, standards, and organizational policies while producing the desired result. The primary consideration should be whether the process is both efficient and effective in meeting quality requirements. Speed, cost, and industry popularity are secondary considerations if the process doesn't meet quality requirements and produce desired results."
+            },
+            {
+                question: "A project manager is establishing a system to monitor project progress. Which of the following best represents a comprehensive approach aligned with the Project Work Performance Domain?",
+                options: [
+                    "Focus only on schedule adherence and milestone completion",
+                    "Monitor short-term and long-term progress toward delivery goals, including workload balance and team satisfaction",
+                    "Track only financial metrics such as budget variance",
+                    "Measure progress solely through stakeholder satisfaction surveys"
+                ],
+                correct: 1,
+                explanation: "The Project Work Performance Domain emphasizes monitoring both short-term and long-term progress toward delivery goals, which includes ensuring workload balance and employee satisfaction and motivation. A comprehensive approach should monitor multiple dimensions of project performance, not just schedule, cost, or stakeholder satisfaction in isolation. The correct answer encompasses the holistic view required by the Project Work Performance Domain."
+            },
+            {
+                question: "A project team needs to procure specialized software licenses from a vendor. The procurement process requires approval from multiple departments. What is the BEST approach according to the Project Work Performance Domain?",
+                options: [
+                    "Proceed with procurement immediately to avoid delays, then seek approvals afterward",
+                    "Understand and follow the organization's procurement authority limits and required processes",
+                    "Negotiate directly with the vendor to get the best price, bypassing internal processes",
+                    "Delegate the entire procurement process to the vendor to save time"
+                ],
+                correct: 1,
+                explanation: "The Project Work Performance Domain explicitly states that organizations typically have rigorous policies and procedures regarding procurement that define who has authority to enter contracts, the limits of that authority, and the processes that should be followed. The best approach is to understand and follow the organization's procurement authority limits and required processes. Bypassing these processes, proceeding without approvals, or delegating to vendors violates organizational governance and could create legal and financial risks."
+            },
+            {
+                question: "A project manager is reviewing the project's Cost Performance Index (CPI) of 0.85 and Schedule Performance Index (SPI) of 1.10. What does this indicate about the project's performance?",
+                options: [
+                    "The project is over budget and behind schedule",
+                    "The project is under budget and ahead of schedule",
+                    "The project is over budget but ahead of schedule",
+                    "The project is under budget but behind schedule"
+                ],
+                correct: 2,
+                explanation: "CPI = 0.85 (less than 1.0) indicates the project is over budget, earning only 85 cents of value for every dollar spent. SPI = 1.10 (greater than 1.0) indicates the project is ahead of schedule, earning $1.10 of value for every dollar of work planned. Therefore, the project is over budget but ahead of schedule. This situation requires the project manager to focus on cost control measures while maintaining the positive schedule performance."
+            },
+            {
+                question: "During a project, the team identifies that certain processes are causing delays and inefficiencies. According to the Project Work Performance Domain, what should the project manager do?",
+                options: [
+                    "Continue with existing processes to maintain consistency",
+                    "Periodically review and customize processes to optimize work based on project needs",
+                    "Wait until the next project to implement process improvements",
+                    "Implement all industry best practices regardless of project context"
+                ],
+                correct: 1,
+                explanation: "The Project Work Performance Domain emphasizes that the project manager and team should periodically define and review the processes the team is pursuing, and that process customization can be used to optimize work according to the project's needs. The correct approach is to periodically review and customize processes to optimize work based on project needs. Continuing with inefficient processes, waiting until the next project, or blindly implementing best practices without considering project context all contradict the principle of continuous process evaluation and customization."
+            },
+            {
+                question: "A project has completed 60% of the work with an Earned Value (EV) of $240,000 and Actual Cost (AC) of $260,000. The Budget at Completion (BAC) is $400,000. What is the Estimate to Complete (ETC) assuming current performance continues?",
+                options: [
+                    "$173,333",
+                    "$160,000",
+                    "$140,000",
+                    "$186,667"
+                ],
+                correct: 0,
+                explanation: "To calculate ETC assuming current performance continues: First, calculate CPI = EV / AC = $240,000 / $260,000 = 0.923. Then, calculate EAC = BAC / CPI = $400,000 / 0.923 = $433,333. Finally, ETC = EAC - AC = $433,333 - $260,000 = $173,333. This represents the estimated cost to complete the remaining work if the current cost performance trend continues. The project is expected to require an additional $173,333 to complete, resulting in a total cost overrun of $33,333."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let userAnswers = [];
+        let quizStartTime;
+        let timerInterval;
+        let timeRemaining = 25 * 60; // 25 minutes in seconds
+
+        function startQuiz() {
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('quizContent').style.display = 'block';
+            document.getElementById('timerSection').style.display = 'block';
+            
+            quizStartTime = Date.now();
+            startTimer();
+            renderQuestions();
+            showQuestion(0);
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay();
+                
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    submitQuiz();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            const timerElement = document.getElementById('timer');
+            timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            if (timeRemaining <= 300) { // 5 minutes warning
+                timerElement.classList.add('warning');
+            }
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+
+            questions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-container';
+                questionDiv.id = `question-${index}`;
+                
+                let optionsHTML = '';
+                q.options.forEach((option, optIndex) => {
+                    optionsHTML += `
+                        <div class="option" onclick="selectOption(${index}, ${optIndex})">
+                            <span class="option-label">${String.fromCharCode(65 + optIndex)}.</span>
+                            <span class="option-text">${option}</span>
+                        </div>
+                    `;
+                });
+
+                questionDiv.innerHTML = `
+                    <div class="question-header">
+                        <span class="question-number">Question ${index + 1} of ${questions.length}</span>
+                    </div>
+                    <div class="question-text">${q.question}</div>
+                    <div class="options" id="options-${index}">
+                        ${optionsHTML}
+                    </div>
+                    <div class="explanation" id="explanation-${index}">
+                        <h4><i class="fas fa-lightbulb"></i> Explanation</h4>
+                        <p>${q.explanation}</p>
+                    </div>
+                `;
+
+                container.appendChild(questionDiv);
+            });
+        }
+
+        function selectOption(questionIndex, optionIndex) {
+            userAnswers[questionIndex] = optionIndex;
+            
+            const options = document.querySelectorAll(`#options-${questionIndex} .option`);
+            options.forEach((opt, idx) => {
+                opt.classList.remove('selected');
+                if (idx === optionIndex) {
+                    opt.classList.add('selected');
+                }
+            });
+        }
+
+        function showQuestion(index) {
+            document.querySelectorAll('.question-container').forEach(q => {
+                q.classList.remove('active');
+            });
+            
+            document.getElementById(`question-${index}`).classList.add('active');
+            currentQuestion = index;
+            
+            updateProgress();
+            updateNavigationButtons();
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function updateNavigationButtons() {
+            document.getElementById('prevBtn').disabled = currentQuestion === 0;
+            
+            if (currentQuestion === questions.length - 1) {
+                document.getElementById('nextBtn').style.display = 'none';
+                document.getElementById('submitBtn').style.display = 'block';
+            } else {
+                document.getElementById('nextBtn').style.display = 'block';
+                document.getElementById('submitBtn').style.display = 'none';
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                showQuestion(currentQuestion - 1);
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                showQuestion(currentQuestion + 1);
+            }
+        }
+
+        function submitQuiz() {
+            clearInterval(timerInterval);
+            
+            let correctCount = 0;
+            questions.forEach((q, index) => {
+                const options = document.querySelectorAll(`#options-${index} .option`);
+                options.forEach((opt, optIndex) => {
+                    if (optIndex === q.correct) {
+                        opt.classList.add('correct');
+                    } else if (optIndex === userAnswers[index]) {
+                        opt.classList.add('incorrect');
+                    }
+                });
+                
+                document.getElementById(`explanation-${index}`).classList.add('show');
+                
+                if (userAnswers[index] === q.correct) {
+                    correctCount++;
+                }
+            });
+
+            const percentage = (correctCount / questions.length) * 100;
+            showResults(correctCount, percentage);
+        }
+
+        function showResults(correctCount, percentage) {
+            document.getElementById('quizContent').style.display = 'none';
+            document.getElementById('timerSection').style.display = 'none';
+            
+            let performanceLevel = '';
+            let performanceClass = '';
+            
+            if (percentage >= 90) {
+                performanceLevel = 'Excellent! Outstanding Performance!';
+                performanceClass = 'excellent';
+            } else if (percentage >= 70) {
+                performanceLevel = 'Good! You Passed!';
+                performanceClass = 'good';
+            } else if (percentage >= 50) {
+                performanceLevel = 'Fair - More Study Needed';
+                performanceClass = 'fair';
+            } else {
+                performanceLevel = 'Needs Improvement';
+                performanceClass = 'poor';
+            }
+
+            let reviewHTML = '<div class="question-review"><h3>Question Review</h3>';
+            questions.forEach((q, index) => {
+                const isCorrect = userAnswers[index] === q.correct;
+                const userAnswerText = userAnswers[index] !== undefined ? q.options[userAnswers[index]] : 'Not answered';
+                const correctAnswerText = q.options[q.correct];
+                
+                reviewHTML += `
+                    <div class="review-item ${isCorrect ? 'correct' : 'incorrect'}">
+                        <strong>Question ${index + 1}:</strong> ${isCorrect ? '<i class="fas fa-check-circle" style="color: #51cf66;"></i>' : '<i class="fas fa-times-circle" style="color: #ff6b6b;"></i>'}
+                        <p><strong>Your answer:</strong> ${userAnswerText}</p>
+                        ${!isCorrect ? `<p><strong>Correct answer:</strong> ${correctAnswerText}</p>` : ''}
+                    </div>
+                `;
+            });
+            reviewHTML += '</div>';
+
+            document.getElementById('results').innerHTML = `
+                <h2><i class="fas fa-trophy"></i> Quiz Complete!</h2>
+                <div class="score-circle">
+                    <div class="score">${correctCount}/${questions.length}</div>
+                    <div class="label">${percentage.toFixed(1)}%</div>
+                </div>
+                <div class="performance-level ${performanceClass}">
+                    ${performanceLevel}
+                </div>
+                <p style="font-size: 1.1em; color: #666; margin: 20px 0;">
+                    You answered ${correctCount} out of ${questions.length} questions correctly.
+                </p>
+                ${reviewHTML}
+                <button class="btn btn-primary" onclick="location.reload()">
+                    <i class="fas fa-redo"></i> Retake Quiz
+                </button>
+            `;
+            
+            document.getElementById('results').classList.add('show');
+        }
+    </script>
+</body>
+</html>

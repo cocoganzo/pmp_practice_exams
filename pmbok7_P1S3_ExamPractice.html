@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PMP Practice Quiz - Project Management Principles (PMBOK 7th Edition)</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .quiz-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 1200px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .quiz-header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .quiz-header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .quiz-header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .quiz-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .quiz-info div {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .quiz-info i {
+            color: #4facfe;
+            font-size: 1.2em;
+        }
+
+        .timer {
+            background: #ff6b6b;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+
+        .timer.warning {
+            background: #ffd43b;
+            color: #333;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .question-container {
+            padding: 40px 30px;
+        }
+
+        .question-number {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            display: inline-block;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .question-text {
+            font-size: 1.3em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+
+        .options-container {
+            display: grid;
+            gap: 15px;
+        }
+
+        .option {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .option:hover {
+            background: #e3f2fd;
+            border-color: #4facfe;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            background: #4facfe;
+            color: white;
+            border-color: #4facfe;
+        }
+
+        .option.correct {
+            background: #51cf66;
+            color: white;
+            border-color: #51cf66;
+        }
+
+        .option.incorrect {
+            background: #ff6b6b;
+            color: white;
+            border-color: #ff6b6b;
+        }
+
+        .option-text {
+            font-size: 1.1em;
+            line-height: 1.5;
+        }
+
+        .option-letter {
+            position: absolute;
+            left: 15px;
+            top: 15px;
+            width: 30px;
+            height: 30px;
+            background: rgba(79, 172, 254, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9em;
+        }
+
+        .option.selected .option-letter,
+        .option.correct .option-letter,
+        .option.incorrect .option-letter {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .quiz-controls {
+            display: flex;
+            justify-content: space-between;
+            padding: 30px;
+            background: #f8f9fa;
+            border-top: 2px solid #e9ecef;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(79, 172, 254, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            transition: width 0.3s ease;
+        }
+
+        .results-container {
+            padding: 40px;
+            text-align: center;
+            display: none;
+        }
+
+        .results-title {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .results-score {
+            font-size: 1.8em;
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .results-score.excellent {
+            background: linear-gradient(135deg, #51cf66, #37b24d);
+            color: white;
+        }
+
+        .results-score.good {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: white;
+        }
+
+        .results-score.fair {
+            background: linear-gradient(135deg, #ffd43b, #fab005);
+            color: #333;
+        }
+
+        .results-score.poor {
+            background: linear-gradient(135deg, #ff6b6b, #f03e3e);
+            color: white;
+        }
+
+        .review-button {
+            background: linear-gradient(135deg, #764ba2, #667eea);
+            color: white;
+            margin-top: 20px;
+        }
+
+        .explanation {
+            background: #e3f2fd;
+            border-left: 4px solid #4facfe;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 0 10px 10px 0;
+            display: none;
+        }
+
+        .explanation h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .explanation p {
+            line-height: 1.6;
+            color: #495057;
+        }
+
+        @media (max-width: 768px) {
+            .quiz-header h1 {
+                font-size: 1.8em;
+            }
+
+            .quiz-info {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .question-container {
+                padding: 30px 20px;
+            }
+
+            .question-text {
+                font-size: 1.1em;
+            }
+
+            .quiz-controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        .principle-tag {
+            background: rgba(79, 172, 254, 0.1);
+            color: #4facfe;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+    </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="quiz-header">
+            <h1><i class="fas fa-project-diagram"></i> PMP Practice Quiz</h1>
+            <p>Project Management Principles - PMBOK Guide 7th Edition, Section 3</p>
+        </div>
+
+        <div class="quiz-info">
+            <div>
+                <i class="fas fa-list-ol"></i>
+                <span>15 Questions</span>
+            </div>
+            <div>
+                <i class="fas fa-clock"></i>
+                <span>25 Minutes</span>
+            </div>
+            <div class="timer" id="timer">25:00</div>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+
+        <div class="question-container" id="questionContainer">
+            <div class="principle-tag" id="principleTag">Stewardship Principle</div>
+            <div class="question-number" id="questionNumber">Question 1 of 15</div>
+            <div class="question-text" id="questionText">Loading question...</div>
+            <div class="options-container" id="optionsContainer">
+                <!-- Options will be populated by JavaScript -->
+            </div>
+            <div class="explanation" id="explanation">
+                <h4>Explanation:</h4>
+                <p id="explanationText"></p>
+            </div>
+        </div>
+
+        <div class="quiz-controls">
+            <button class="btn btn-secondary" id="prevBtn" onclick="previousQuestion()" disabled>
+                <i class="fas fa-arrow-left"></i> Previous
+            </button>
+            <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" disabled>
+                Next <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+
+        <div class="results-container" id="resultsContainer">
+            <h2 class="results-title">Quiz Complete!</h2>
+            <div class="results-score" id="resultsScore">
+                Your Score: 0/15
+            </div>
+            <p style="font-size: 1.2em; color: #495057; margin-bottom: 30px;">
+                Review your answers below to understand the concepts better.
+            </p>
+            <button class="btn review-button" onclick="reviewAnswers()">
+                <i class="fas fa-redo"></i> Review Answers
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: "A project manager is overseeing a critical infrastructure project that will impact the local community for decades. During a cost-cutting initiative, the sponsor suggests using lower-quality materials that would save $2 million but could compromise the long-term safety and environmental impact. The project manager knows this violates ethical standards but the sponsor is pressuring for approval. What principle should guide the project manager's decision?",
+                options: [
+                    "Focus on Value - the savings provide immediate value to stakeholders",
+                    "Tailor Based on Context - cost pressures justify adapting quality standards",
+                    "Be a Diligent, Respectful, and Caring Steward - protect long-term interests over short-term gains",
+                    "Demonstrate Leadership Behaviors - push back against the sponsor to assert authority"
+                ],
+                correct: 2,
+                explanation: "The Stewardship principle emphasizes acting with integrity and accountability for organizational resources, reputation, and outcomes. A steward considers long-term impacts and makes ethical choices that protect stakeholders, even when unpopular. Choosing short-term savings over long-term safety and environmental responsibility would violate this core principle.",
+                principle: "Stewardship"
+            },
+            {
+                question: "A project team consists of members from five different countries with varying cultural backgrounds, communication styles, and work preferences. The project manager notices that team members from certain cultures rarely speak up during meetings, while others dominate discussions. This is causing some valuable perspectives to be missed. Which PMBOK 7 principle is most critical to address this situation?",
+                options: [
+                    "Create a Collaborative Project Team Environment",
+                    "Effectively Engage with Stakeholders",
+                    "Demonstrate Leadership Behaviors", 
+                    "Navigate Complexity"
+                ],
+                correct: 0,
+                explanation: "Creating a collaborative team environment involves fostering psychological safety, mutual respect, and ensuring all team members feel valued and empowered to contribute. The project manager needs to implement specific strategies to ensure diverse perspectives are heard, such as structured turn-taking, anonymous input methods, or cultural sensitivity training.",
+                principle: "Team Collaboration"
+            },
+            {
+                question: "A software development project has multiple stakeholders: the end users who want feature-rich functionality, the finance department focused on budget constraints, the IT operations team concerned about maintainability, and regulatory compliance officers focused on data privacy. Each group has different priorities and success criteria. What principle should the project manager apply to manage this situation effectively?",
+                options: [
+                    "Focus on Value - prioritize the most valuable features for end users",
+                    "Recognize, Evaluate, and Respond to System Interactions",
+                    "Effectively Engage with Stakeholders - balance differing interests with fairness",
+                    "Optimize Risk Responses - address the risks of stakeholder conflicts"
+                ],
+                correct: 2,
+                explanation: "The Stakeholder Engagement principle requires identifying all affected parties and maintaining transparent communication while balancing differing interests with fairness and openness. The project manager must develop a comprehensive stakeholder engagement strategy that addresses each group's concerns while finding common ground and managing expectations throughout the project.",
+                principle: "Stakeholder Engagement"
+            },
+            {
+                question: "During a mid-project review, the project manager discovers that a major feature being developed, while technically impressive, is rarely used by customers and doesn't align with the organization's strategic goals. However, the team has already invested 1,000 hours in its development. What should the project manager do based on the Focus on Value principle?",
+                options: [
+                    "Continue development since significant investment has already been made",
+                    "Cancel the feature despite sunk costs to reallocate resources to higher-value activities",
+                    "Complete the feature but document it as a lesson learned for future projects",
+                    "Ask the sponsor to decide since the team has done the work requested"
+                ],
+                correct: 1,
+                explanation: "The Focus on Value principle emphasizes continually assessing whether work contributes to measurable benefits. Sunk costs should not influence future decisions. If a feature doesn't deliver strategic value, the project manager should recommend reallocating resources to higher-value activities, even if it means canceling work already in progress.",
+                principle: "Focus on Value"
+            },
+            {
+                question: "A project manager is leading a digital transformation initiative that affects the entire organization. The project is causing conflicts with other ongoing initiatives, competing for the same technical resources and executive attention. Several departments are resisting changes because they feel their existing projects are being deprioritized. Which PMBOK 7 principle would help the project manager address these interconnected challenges?",
+                options: [
+                    "Demonstrate Leadership Behaviors",
+                    "Recognize, Evaluate, and Respond to System Interactions",
+                    "Build Quality into Processes and Deliverables",
+                    "Embrace Adaptability and Resiliency"
+                ],
+                correct: 1,
+                explanation: "Systems Thinking requires viewing the project as part of a wider system with connections and dependencies. The project manager must map the organizational landscape, identify resource conflicts and dependencies, understand feedback loops, and coordinate with other initiatives to minimize negative impacts and maximize collective success.",
+                principle: "Systems Thinking"
+            },
+            {
+                question: "A junior project manager is struggling with team motivation after a major setback in the project timeline. Team members are discouraged, finger-pointing has begun, and several key contributors are considering leaving the project. The senior project manager wants to mentor the junior PM on what principle would be most valuable in this situation. What should they emphasize?",
+                options: [
+                    "Be a Diligent, Respectful, and Caring Steward",
+                    "Create a Collaborative Project Team Environment",
+                    "Demonstrate Leadership Behaviors - inspire through vision and remove barriers",
+                    "Embrace Adaptability and Resiliency"
+                ],
+                correct: 2,
+                explanation: "Leadership behaviors involve inspiring teams, communicating vision clearly, and removing barriers that prevent progress. In this situation, the junior PM needs to rally the team around a renewed vision, address the setback constructively, remove obstacles to progress, and rebuild confidence through visible leadership and support.",
+                principle: "Leadership"
+            },
+            {
+                question: "A project manager with extensive experience in large construction projects is assigned to lead a small software development project. They initially apply the same detailed documentation, formal change control processes, and comprehensive risk management approaches used in their previous projects. However, the development team finds these practices burdensome and they're slowing down the delivery cycle. What principle is the project manager failing to apply effectively?",
+                options: [
+                    "Tailor Based on Context",
+                    "Build Quality into Processes and Deliverables",
+                    "Navigate Complexity",
+                    "Optimize Risk Responses"
+                ],
+                correct: 0,
+                explanation: "The Tailoring principle emphasizes adapting frameworks to fit the specific context including size, complexity, and organizational culture. Large construction projects require different approaches than small software development projects. The project manager should reduce documentation overhead, implement lighter change control, and adopt risk management practices appropriate for the project's scale and methodology.",
+                principle: "Tailoring"
+            },
+            {
+                question: "A project team is following a traditional approach where quality testing occurs only at the end of development. They consistently discover major defects late in the process, requiring extensive rework and causing delays. The project manager wants to address this systematic issue. Which principle would provide the best guidance for transforming their approach to quality?",
+                options: [
+                    "Navigate Complexity",
+                    "Build Quality into Processes and Deliverables",
+                    "Optimize Risk Responses",
+                    "Enable Change to Achieve the Envisioned Future State"
+                ],
+                correct: 1,
+                explanation: "Building quality into every phase requires a proactive approach where quality is considered throughout the project, not just inspected at the end. This involves implementing continuous testing, peer reviews, clear acceptance criteria, and quality gates throughout the development process to catch issues when they're easiest and cheapest to fix.",
+                principle: "Quality"
+            },
+            {
+                question: "A smart city project involves integrating multiple complex systems: transportation networks, utility grids, emergency services, and citizen communication platforms. Each system has its own technology stack, regulatory requirements, and stakeholder groups. The project manager is overwhelmed by the interdependencies and emerging challenges that weren't anticipated in initial planning. Which principle would be most valuable for navigating this environment?",
+                options: [
+                    "Recognize, Evaluate, and Respond to System Interactions",
+                    "Navigate Complexity",
+                    "Demonstrate Leadership Behaviors",
+                    "Embrace Adaptability and Resiliency"
+                ],
+                correct: 1,
+                explanation: "Navigating complexity involves embracing it with structure rather than oversimplifying. The project manager should use decomposition to break complex systems into manageable components, create visual dependency maps, implement iterative planning, and continuously monitor and adjust approaches as new interdependencies emerge.",
+                principle: "Complexity"
+            },
+            {
+                question: "During a risk assessment workshop, a project team identifies both threats and opportunities. They list risks like 'key supplier may delay delivery' (threat) and 'new technology could reduce implementation time by 40%' (opportunity). The team tends to focus only on avoiding threats while ignoring opportunities. What principle should the project manager emphasize to ensure a balanced approach?",
+                options: [
+                    "Optimize Risk Responses",
+                    "Embrace Adaptability and Resiliency",
+                    "Navigate Complexity",
+                    "Focus on Value"
+                ],
+                correct: 0,
+                explanation: "Optimizing risk responses involves both mitigating threats and exploiting opportunities. The project manager should ensure the team develops strategies for negative risks (avoid, transfer, mitigate, accept) and positive risks (exploit, share, enhance, accept). This balanced approach maximizes the project's potential for success while minimizing downside exposure.",
+                principle: "Risk Management"
+            },
+            {
+                question: "A project is developing a new e-commerce platform when a major competitor suddenly launches a similar product with advanced features. The project's market analysis assumptions are no longer valid, customer expectations have shifted, and the project's value proposition is weakened. What principle should guide the project manager's response to this situation?",
+                options: [
+                    "Be a Diligent, Respectful, and Caring Steward",
+                    "Embrace Adaptability and Resiliency",
+                    "Effectively Engage with Stakeholders",
+                    "Enable Change to Achieve the Envisioned Future State"
+                ],
+                correct: 1,
+                explanation: "Embracing adaptability and resiliency involves encouraging flexibility under uncertainty and building capacity to absorb shocks without losing momentum. The project manager should assess the changed landscape, pivot the strategy if needed, communicate openly with stakeholders about the changes, and help the team adjust to new circumstances while maintaining morale and focus.",
+                principle: "Adaptability & Resiliency"
+            },
+            {
+                question: "An organization is implementing a new enterprise resource planning (ERP) system that will change how every department operates. Despite technical implementation going smoothly, user adoption is low, productivity has temporarily decreased, and several departments are resisting the new processes. The project manager realizes the technical delivery alone isn't sufficient. Which principle should guide their approach to this challenge?",
+                options: [
+                    "Enable Change to Achieve the Envisioned Future State",
+                    "Demonstrate Leadership Behaviors",
+                    "Effectively Engage with Stakeholders",
+                    "Embrace Adaptability and Resiliency"
+                ],
+                correct: 0,
+                explanation: "Enabling change involves managing both the technical and people sides of transformation. The project manager needs to focus on the people aspects: understanding stakeholder impacts, addressing resistance to change, providing adequate training and support, and ensuring the change is sustainable over the long term rather than just completing technical implementation.",
+                principle: "Change Enablement"
+            },
+            {
+                question: "A project manager notices that team members consistently hide problems and delays until they become major issues. During retrospectives, team members admit they fear punishment or blame for reporting bad news early. What principle, if properly implemented, would most likely prevent this behavior and encourage early problem identification?",
+                options: [
+                    "Be a Diligent, Respectful, and Caring Steward",
+                    "Create a Collaborative Project Team Environment",
+                    "Demonstrate Leadership Behaviors",
+                    "Optimize Risk Responses"
+                ],
+                correct: 1,
+                explanation: "Creating a collaborative team environment involves establishing psychological safety where team members feel safe to report problems without fear of blame. The project manager should foster an environment where transparency is rewarded, learning from failures is encouraged, and team members feel empowered to raise concerns early when they're easier to address.",
+                principle: "Team Collaboration"
+            },
+            {
+                question: "A project manager is deciding between a predictive (waterfall) approach with detailed upfront planning versus an adaptive (agile) approach with iterative delivery. The project has clear regulatory requirements that cannot change, but the technical implementation approach is uncertain and may need to evolve based on learning. Which principle should guide this methodology decision?",
+                options: [
+                    "Tailor Based on Context",
+                    "Navigate Complexity",
+                    "Embrace Adaptability and Resiliency",
+                    "Focus on Value"
+                ],
+                correct: 0,
+                explanation: "Tailoring based on context requires adapting methodologies to fit the unique characteristics of the project. In this case, a hybrid approach might be best: predictive planning for the fixed regulatory requirements combined with adaptive development for the technical implementation. The principle guides the project manager to consider all project characteristics rather than defaulting to a single methodology.",
+                principle: "Tailoring"
+            },
+            {
+                question: "A project sponsor approaches the project manager with a request to manipulate project status reports to show better progress than reality, citing the need to maintain stakeholder confidence and secure future funding. The project manager knows this violates ethical standards but faces significant pressure to comply. What principle provides the strongest foundation for refusing this request and maintaining professional integrity?",
+                options: [
+                    "Be a Diligent, Respectful, and Caring Steward",
+                    "Demonstrate Leadership Behaviors",
+                    "Effectively Engage with Stakeholders", 
+                    "Focus on Value"
+                ],
+                correct: 0,
+                explanation: "The Stewardship principle encompasses ethical responsibility and integrity in managing resources, information, and relationships. A steward acts with honesty and transparency, protecting the organization's long-term interests over short-term appearances. This principle provides the ethical foundation for refusing to manipulate reports and maintaining professional integrity even under pressure.",
+                principle: "Stewardship"
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let selectedAnswers = [];
+        let timeLeft = 1500; // 25 minutes in seconds
+        let timerInterval;
+
+        function startQuiz() {
+            displayQuestion();
+            startTimer();
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    endQuiz();
+                } else if (timeLeft <= 300) { // 5 minutes warning
+                    document.getElementById('timer').classList.add('warning');
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timer').textContent = 
+                `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function displayQuestion() {
+            const question = quizData[currentQuestion];
+            
+            document.getElementById('principleTag').textContent = question.principle + " Principle";
+            document.getElementById('questionNumber').textContent = 
+                `Question ${currentQuestion + 1} of ${quizData.length}`;
+            document.getElementById('questionText').textContent = question.question;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                optionDiv.onclick = () => selectOption(index);
+                
+                if (selectedAnswers[currentQuestion] === index) {
+                    optionDiv.classList.add('selected');
+                }
+                
+                optionDiv.innerHTML = `
+                    <div class="option-letter">${String.fromCharCode(65 + index)}</div>
+                    <div class="option-text">${option}</div>
+                `;
+                
+                optionsContainer.appendChild(optionDiv);
+            });
+            
+            updateProgress();
+            updateButtonStates();
+            
+            // Hide explanation
+            document.getElementById('explanation').style.display = 'none';
+        }
+
+        function selectOption(index) {
+            selectedAnswers[currentQuestion] = index;
+            
+            // Update visual selection
+            const options = document.querySelectorAll('.option');
+            options.forEach((option, i) => {
+                option.classList.remove('selected');
+                if (i === index) {
+                    option.classList.add('selected');
+                }
+            });
+            
+            // Enable next button
+            document.getElementById('nextBtn').disabled = false;
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < quizData.length - 1) {
+                currentQuestion++;
+                displayQuestion();
+            } else {
+                endQuiz();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                displayQuestion();
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / quizData.length) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+        }
+
+        function updateButtonStates() {
+            document.getElementById('prevBtn').disabled = currentQuestion === 0;
+            document.getElementById('nextBtn').disabled = selectedAnswers[currentQuestion] === undefined;
+        }
+
+        function endQuiz() {
+            clearInterval(timerInterval);
+            
+            // Calculate score
+            score = 0;
+            selectedAnswers.forEach((answer, index) => {
+                if (answer === quizData[index].correct) {
+                    score++;
+                }
+            });
+            
+            // Display results
+            const resultsContainer = document.getElementById('resultsContainer');
+            const questionContainer = document.getElementById('questionContainer');
+            const quizControls = document.querySelector('.quiz-controls');
+            
+            questionContainer.style.display = 'none';
+            quizControls.style.display = 'none';
+            resultsContainer.style.display = 'block';
+            
+            const resultsScore = document.getElementById('resultsScore');
+            resultsScore.textContent = `Your Score: ${score}/${quizData.length}`;
+            
+            // Determine performance level
+            const percentage = (score / quizData.length) * 100;
+            resultsScore.className = 'results-score';
+            
+            if (percentage >= 90) {
+                resultsScore.classList.add('excellent');
+                resultsScore.innerHTML = `Excellent! ${score}/${quizData.length}<br>You have mastered the Project Management Principles`;
+            } else if (percentage >= 70) {
+                resultsScore.classList.add('good');
+                resultsScore.innerHTML = `Good Job! ${score}/${quizData.length}<br>You have a solid understanding of the Principles`;
+            } else if (percentage >= 50) {
+                resultsScore.classList.add('fair');
+                resultsScore.innerHTML = `Fair Performance ${score}/${quizData.length}<br>Review the explanations to improve your knowledge`;
+            } else {
+                resultsScore.classList.add('poor');
+                resultsScore.innerHTML = `Keep Learning ${score}/${quizData.length}<br>Review the Principles thoroughly and try again`;
+            }
+        }
+
+        function reviewAnswers() {
+            currentQuestion = 0;
+            displayQuestionWithAnswer();
+            
+            // Show question container and hide results
+            document.getElementById('questionContainer').style.display = 'block';
+            document.getElementById('resultsContainer').style.display = 'none';
+            
+            // Change control buttons
+            document.getElementById('prevBtn').style.display = 'none';
+            document.getElementById('nextBtn').textContent = 'Next Question';
+            document.getElementById('nextBtn').onclick = () => {
+                if (currentQuestion < quizData.length - 1) {
+                    currentQuestion++;
+                    displayQuestionWithAnswer();
+                } else {
+                    // Return to results
+                    document.getElementById('resultsContainer').style.display = 'block';
+                    document.getElementById('questionContainer').style.display = 'none';
+                }
+            };
+        }
+
+        function displayQuestionWithAnswer() {
+            const question = quizData[currentQuestion];
+            
+            document.getElementById('principleTag').textContent = question.principle + " Principle";
+            document.getElementById('questionNumber').textContent = 
+                `Question ${currentQuestion + 1} of ${quizData.length} - Review`;
+            document.getElementById('questionText').textContent = question.question;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                
+                if (index === question.correct) {
+                    optionDiv.classList.add('correct');
+                } else if (index === selectedAnswers[currentQuestion] && index !== question.correct) {
+                    optionDiv.classList.add('incorrect');
+                }
+                
+                optionDiv.innerHTML = `
+                    <div class="option-letter">${String.fromCharCode(65 + index)}</div>
+                    <div class="option-text">${option}</div>
+                `;
+                
+                optionsContainer.appendChild(optionDiv);
+            });
+            
+            // Show explanation
+            document.getElementById('explanation').style.display = 'block';
+            document.getElementById('explanationText').textContent = question.explanation;
+            
+            updateProgress();
+            
+            // Update button state
+            document.getElementById('nextBtn').disabled = false;
+        }
+
+        // Initialize quiz on page load
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PMBOK 7 - Exam Practice Tests</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 50px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: "📝";
+            position: absolute;
+            font-size: 200px;
+            opacity: 0.1;
+            top: -50px;
+            right: -50px;
+            transform: rotate(-15deg);
+        }
+
+        .header h1 {
+            font-size: 2.8em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1.3em;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header .subtitle {
+            margin-top: 10px;
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 50px 40px;
+        }
+
+        .intro-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 35px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            color: white;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            text-align: center;
+        }
+
+        .intro-section h2 {
+            margin-bottom: 15px;
+            font-size: 2em;
+        }
+
+        .intro-section p {
+            font-size: 1.15em;
+            line-height: 1.8;
+            opacity: 0.95;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 3em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 1.1em;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            font-size: 2em;
+            color: #f5576c;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 4px solid #f5576c;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-icon {
+            font-size: 1.3em;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .exam-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+        }
+
+        .exam-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: all 0.4s ease;
+            border: 2px solid transparent;
+        }
+
+        .exam-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            border-color: #f5576c;
+        }
+
+        .exam-card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .exam-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .exam-number {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .exam-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .exam-category {
+            font-size: 0.95em;
+            opacity: 0.85;
+            font-style: italic;
+        }
+
+        .exam-card-body {
+            padding: 25px;
+        }
+
+        .exam-description {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            font-size: 1em;
+        }
+
+        .exam-link {
+            display: block;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            text-align: center;
+            padding: 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .exam-link::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .exam-link:hover::before {
+            left: 100%;
+        }
+
+        .exam-link:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4);
+        }
+
+        .difficulty-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .difficulty-intermediate {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .difficulty-advanced {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .tips-section {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 40px;
+            color: #333;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .tips-section h3 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #fff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .tip-box {
+            background: rgba(255,255,255,0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .tip-box h4 {
+            color: #f5576c;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .tip-box ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .tip-box li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .tip-box li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #27ae60;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .header p {
+                font-size: 1.1em;
+            }
+
+            .content {
+                padding: 30px 20px;
+            }
+
+            .section-title {
+                font-size: 1.6em;
+            }
+
+            .exam-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 PMBOK 7 Exam Practice Tests</h1>
+            <p>Master Your Project Management Knowledge</p>
+            <p class="subtitle">Comprehensive Practice Exams for PMP Certification</p>
+        </div>
+
+        <div class="content">
+            <div class="intro-section">
+                <h2>🚀 Prepare for Success</h2>
+                <p>Test your knowledge with our comprehensive exam practice questions covering all sections and performance domains of PMBOK 7. Each practice test is designed to help you master the concepts and prepare for your PMP certification exam.</p>
+            </div>
+
+            <div class="stats-container">
+                <div class="stat-box">
+                    <div class="stat-number">10</div>
+                    <div class="stat-label">Practice Tests</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">8</div>
+                    <div class="stat-label">Performance Domains</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">PMBOK 7 Coverage</div>
+                </div>
+            </div>
+
+            <!-- Part 1: Introduction & Principles Tests -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-icon">📖</span>
+                    Part 1: Introduction & Principles Practice Tests
+                </h2>
+                <div class="exam-grid">
+                    <div class="exam-card">
+                        <div class="exam-card-header">
+                            <div class="exam-icon">📚</div>
+                            <div class="exam-number">Exam Practice 01</div>
+                            <div class="exam-title">Sections 1-2</div>
+                            <div class="exam-category">Introduction & Value Delivery</div>
+                        </div>
+                        <div class="exam-card-body">
+                            <p class="exam-description">Test your understanding of project management fundamentals, value delivery systems, and the foundation concepts of PMBOK 7.</p>
+                            <span class="difficulty-badge difficulty-intermediate">Intermediate Level</span>
+                            <a href="pmbok7_P1S1-2_ExamPractice.html" class="exam-link">Start Practice Test →</a>
+                        </div>
+                    </div>
+
+                    <div class="exam-card">
+                        <div class="exam-card-header" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+                            <div class="exam-icon">🎯</div>
+                            <div class="exam-number">Exam Practice 02</div>
+                            <div class="exam-title">Section 3</div>
+                            <div class="exam-category">12 Project Management Principles</div>
+                        </div>
+                        <div class="exam-card-body">
+                            <p class="exam-description">Master the 12 guiding principles of project management including stewardship, team, stakeholders, value, and systems thinking.</p>
+                            <span class="difficulty-badge difficulty-intermediate">Intermediate Level</span>
+                            <a href="pmbok7_P1S3_ExamPractice.html" class="exam-link">Start Practice Test →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 2: Performance Domains Tests -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-icon">⚡</span>
+                    Part 2: Performance Domains Practice Tests
+                </h2>
+                <div class="exam-grid">
+                    <div class="exam-card">
+                        <div class="exam-card-header" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                            <div class="exam-icon">👥</div>
+                            <div class="exam-number">Exam Practice 03</div>
+                            <div class="exam-title">Performance Domain 1</div>
+                            <div class="exam-category">Stakeholders</div>
+                        </div>
+                        <div class="exam-card-body">
+                            <p class="exam-description">Evaluate your knowledge of stakeholder identification, analysis, engagement strategies, and effective communication.</p>
+                            <span class="difficulty-badge difficulty-advanced">Advanced Level</span>
+                            <a href="pmbok7_P2PerformanceDomain1_ExamPractice.html" class="exam-link">Start Practice Test →</a>
+                        </div>
+                    </div>
+
+                    <div class="exam-card">
+                        <div class="exam-card-header" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                            <div class="exam-icon">🤝</div>
+                            <div class="exam-number">Exam Practice 04</div>
+                            <div class="exam-title">Performance Domain 2</div>
+                            <div class="exam-category">Team</div>
+                        </div>
+                        <div class="exam-card-body">
+                            <p class="exam-description">Test your understanding of team development, leadership models, conflict resolution, and building high-performing teams.</p>
+                            <span class="difficulty-badge difficulty-advanced">Advanced Level</span>
+                            <a href="pmbok7_P2PerformanceDomain2_ExamPractice.html" class="exam-link">Start Practice Test →</a>
+                        </div>
+                    </div>
+
+                    <div class="exam-card">
+                        <div class="exam-card-header" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">
+                            <div class="exam-icon">🔄</div>
+                            <div class="exam-number">Exam Practice 05</div>
+                            <div class="exam-title">Performance Domain 3</div>
+                            <div class="exam-category">Development Approach & Life Cycle</div>
+                        </div>
+                        <div class="exam-card-body">
+                            <p class="exam-description">Master predictive, adaptive, and hybrid approaches. Understand when to apply different project life cycles.</p>
+                            <span class="difficulty-badge difficulty-advanced">Advanced Level</span>
+                            <a href="pmbok7_P2PerformanceDomain3_ExamPractice.html" class="exam-link">Start Practice Test →</a>
+                        </div>
+                    </div>
+
+                    <div class="exam-card">
+                        <div class="exam-card-header" style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);">
+                            <div class="exam-icon">📋</div>
+                            <div class="exam-number">Exam Practice 06</div>
+                            <div class="exam-title">Performance Domain 4</div>
+                            <div class="exam-category">Planning</div>
+                        </div>
+                        <div class="exam-card-body">
+                            <p class="exam-description">Assess your planning skills including scope, schedule, cost, resource, and risk planning across different methodologies.</p>
+                            <span class="difficulty-badge difficulty-advanced">Advanced Level</span>
+                            <a href="pmbok7_P2PerformanceDomain4_ExamPractice.html" class="exam-link">Start Practice Test →</a>
+                        </div>
+                    </div>
+
+                    <div class="exam-card">
+                        <div class="exam-card-header" style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);">
+                            <div class="exam-icon">⚙️</div>
+                            <div class="exam-number">Exam Practice 07</div>
+                            <div class="exam-title">Performance Domain 5</div>
+                            <div class="exam-category">Project Work</div>
+                        </div>
+                        <div class="exam-card-body">
+                            <p class="exam-description">Test your knowledge of executing project work, managing resources, procurement, and maintaining project momentum.</p>
+                            <span class="difficulty-badge difficulty-advanced">Advanced Level</span>
+                            <a href="pmbok7_P2PerformanceDomain5_ExamPractice.html" class="exam-link">Start Practice Test →</a>
+                        </div>
+                    </div>
+
+                    <div class="exam-card">
+                        <div class="exam-card-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                            <div class="exam-icon">🚀</div>
+                            <div class="exam-number">Exam Practice 08</div>
+                            <div class="exam-title">Performance Domain 6</div>
+                            <div class="exam-category">Delivery</div>
+                        </div>
+                        <div class="exam-card-body">
+                            <p class="exam-description">Evaluate your understanding of deliverable quality, scope validation, change control, and successful project delivery.</p>
+                            <span class="difficulty-badge difficulty-advanced">Advanced Level</span>
+                            <a href="pmbok7_P2PerformanceDomain6_ExamPractice.html" class="exam-link">Start Practice Test →</a>
+                        </div>
+                    </div>
+
+                    <div class="exam-card">
+                        <div class="exam-card-header" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                            <div class="exam-icon">📊</div>
+                            <div class="exam-number">Exam Practice 09</div>
+                            <div class="exam-title">Performance Domain 7</div>
+                            <div class="exam-category">Measurement</div>
+                        </div>
+                        <div class="exam-card-body">
+                            <p class="exam-description">Master metrics, KPIs, earned value management, and data-driven decision making for project success.</p>
+                            <span class="difficulty-badge difficulty-advanced">Advanced Level</span>
+                            <a href="pmbok7_P2PerformanceDomain7_ExamPractice.html" class="exam-link">Start Practice Test →</a>
+                        </div>
+                    </div>
+
+                    <div class="exam-card">
+                        <div class="exam-card-header" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                            <div class="exam-icon">⚠️</div>
+                            <div class="exam-number">Exam Practice 10</div>
+                            <div class="exam-title">Performance Domain 8</div>
+                            <div class="exam-category">Uncertainty</div>
+                        </div>
+                        <div class="exam-card-body">
+                            <p class="exam-description">Test your risk management knowledge including identification, analysis, response strategies, and uncertainty management.</p>
+                            <span class="difficulty-badge difficulty-advanced">Advanced Level</span>
+                            <a href="pmbok7_P2PerformanceDomain8_ExamPractice.html" class="exam-link">Start Practice Test →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tips Section -->
+            <div class="tips-section">
+                <h3>💡 Exam Preparation Tips</h3>
+                <div class="tips-grid">
+                    <div class="tip-box">
+                        <h4>📚 Study Strategy</h4>
+                        <ul>
+                            <li>Review content before each test</li>
+                            <li>Take notes on wrong answers</li>
+                            <li>Focus on weak areas</li>
+                            <li>Retake tests for mastery</li>
+                        </ul>
+                    </div>
+                    <div class="tip-box">
+                        <h4>⏱️ Time Management</h4>
+                        <ul>
+                            <li>Practice under timed conditions</li>
+                            <li>Don't rush through questions</li>
+                            <li>Review flagged questions</li>
+                            <li>Manage exam day timing</li>
+                        </ul>
+                    </div>
+                    <div class="tip-box">
+                        <h4>🎯 Test-Taking Skills</h4>
+                        <ul>
+                            <li>Read questions carefully</li>
+                            <li>Eliminate wrong answers</li>
+                            <li>Look for keywords</li>
+                            <li>Trust your first instinct</li>
+                        </ul>
+                    </div>
+                    <div class="tip-box">
+                        <h4>🔄 Continuous Review</h4>
+                        <ul>
+                            <li>Complete all 10 practice tests</li>
+                            <li>Track your progress</li>
+                            <li>Review explanations thoroughly</li>
+                            <li>Connect concepts across domains</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

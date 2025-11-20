@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PMP Practice Quiz - Stakeholder Performance Domain</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .timer-section {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .timer {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .timer.warning {
+            color: #ff6b6b;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .quiz-info {
+            background: #e3f2fd;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #2196F3;
+        }
+
+        .quiz-info h3 {
+            color: #1976D2;
+            margin-bottom: 10px;
+        }
+
+        .quiz-info ul {
+            margin-left: 20px;
+            color: #555;
+        }
+
+        .quiz-info li {
+            margin: 5px 0;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .question-container {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .question-container.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-header {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 5px solid #667eea;
+        }
+
+        .question-number {
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .question-text {
+            font-size: 1.2em;
+            color: #333;
+            margin: 15px 0;
+            line-height: 1.6;
+        }
+
+        .options {
+            margin: 20px 0;
+        }
+
+        .option {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .option:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .option.correct {
+            background: #51cf66;
+            color: white;
+            border-color: #51cf66;
+        }
+
+        .option.incorrect {
+            background: #ff6b6b;
+            color: white;
+            border-color: #ff6b6b;
+        }
+
+        .option-label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .explanation {
+            display: none;
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 5px solid #ffc107;
+        }
+
+        .explanation.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        .explanation h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .explanation p {
+            color: #856404;
+            line-height: 1.6;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            height: 10px;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.3s;
+        }
+
+        .results {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .results.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 30px auto;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .score-circle .score {
+            font-size: 3em;
+            font-weight: bold;
+        }
+
+        .score-circle .label {
+            font-size: 1.2em;
+        }
+
+        .performance-level {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .performance-level.excellent {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .performance-level.good {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .performance-level.fair {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .performance-level.poor {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .question-review {
+            text-align: left;
+            margin-top: 30px;
+        }
+
+        .review-item {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+        }
+
+        .review-item.correct {
+            border-left-color: #51cf66;
+        }
+
+        .review-item.incorrect {
+            border-left-color: #ff6b6b;
+        }
+
+        .start-screen {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .start-screen h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .start-screen .btn {
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+
+            .question-text {
+                font-size: 1em;
+            }
+
+            .navigation {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-users"></i> PMP Practice Quiz</h1>
+            <p>Stakeholder Performance Domain (PMBOK 7th Edition)</p>
+        </div>
+
+        <div class="timer-section" id="timerSection" style="display: none;">
+            <div class="timer" id="timer">25:00</div>
+            <p>Time Remaining</p>
+        </div>
+
+        <div class="content">
+            <div class="start-screen" id="startScreen">
+                <h2>Welcome to the Stakeholder Performance Domain Quiz</h2>
+                <div class="quiz-info">
+                    <h3><i class="fas fa-info-circle"></i> Quiz Information</h3>
+                    <ul>
+                        <li><strong>Number of Questions:</strong> 15</li>
+                        <li><strong>Time Limit:</strong> 25 minutes</li>
+                        <li><strong>Passing Score:</strong> 70% (11 out of 15)</li>
+                        <li><strong>Question Types:</strong> Multiple choice and scenario-based questions</li>
+                        <li><strong>Topics Covered:</strong> Stakeholder identification, analysis, engagement strategies, and communication management</li>
+                    </ul>
+                </div>
+                <button class="btn btn-primary" onclick="startQuiz()">
+                    <i class="fas fa-play"></i> Start Quiz
+                </button>
+            </div>
+
+            <div id="quizContent" style="display: none;">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar"></div>
+                </div>
+
+                <!-- Questions will be inserted here -->
+                <div id="questionsContainer"></div>
+
+                <div class="navigation">
+                    <button class="btn btn-secondary" id="prevBtn" onclick="previousQuestion()" disabled>
+                        <i class="fas fa-arrow-left"></i> Previous
+                    </button>
+                    <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">
+                        Next <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button class="btn btn-primary" id="submitBtn" onclick="submitQuiz()" style="display: none;">
+                        <i class="fas fa-check"></i> Submit Quiz
+                    </button>
+                </div>
+            </div>
+
+            <div class="results" id="results"></div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "A project manager is working on a healthcare IT implementation project and has identified multiple stakeholders including doctors, nurses, administrative staff, IT technicians, and patients. Some stakeholders have high power but low interest, while others have high interest but low power. According to the Stakeholder Performance Domain, what is the MOST appropriate tool to categorize and prioritize these stakeholders?",
+                options: [
+                    "Risk register to categorize stakeholders by potential project impact",
+                    "Power-Interest Grid to map stakeholders based on their influence and interest levels",
+                    "Communication plan to identify stakeholder information needs",
+                    "RACI matrix to define stakeholder roles and responsibilities"
+                ],
+                correct: 1,
+                explanation: "The Power-Interest Grid is the primary tool in the Stakeholder Performance Domain for categorizing stakeholders based on their power (influence) and interest levels. This helps project managers prioritize engagement efforts and determine appropriate strategies for different stakeholder groups. While a risk register, communication plan, and RACI matrix are valuable project management tools, they don't serve the specific purpose of stakeholder categorization and prioritization based on influence and interest."
+            },
+            {
+                question: "During stakeholder analysis, the project manager identifies a department head who has significant decision-making authority over project funding but shows little interest in the project's day-to-day activities. According to the Stakeholder Performance Domain, what engagement strategy would be MOST appropriate for this stakeholder?",
+                options: [
+                    "Keep Satisfied - provide sufficient information and consultation to maintain their support",
+                    "Manage Closely - engage them fully and involve them in all major decisions",
+                    "Monitor - track their involvement with minimal effort",
+                    "Keep Informed - provide regular updates without requiring active participation"
+                ],
+                correct: 0,
+                explanation: "For stakeholders with high power but low interest (like this department head), the appropriate strategy is to 'Keep Satisfied.' These stakeholders can significantly impact the project through their authority, so ensuring they remain satisfied with the project's direction and outcomes is crucial. 'Manage Closely' is for high power, high interest stakeholders; 'Keep Informed' is for low power, high interest stakeholders; and 'Monitor' is for low power, low interest stakeholders."
+            },
+            {
+                question: "A project manager notices that a key stakeholder who was initially supportive has become increasingly critical of project decisions and is now questioning the project's value in team meetings. This stakeholder has moderate influence and high interest in the project outcomes. What should the project manager do FIRST according to the Stakeholder Performance Domain?",
+                options: [
+                    "Document the stakeholder's criticisms in the issue log and address them in the next steering committee meeting",
+                    "Schedule a one-on-one meeting to understand the stakeholder's concerns and address them proactively",
+                    "Reduce the stakeholder's involvement in project activities to minimize their negative influence",
+                    "Request that the project sponsor intervene and manage the difficult stakeholder"
+                ],
+                correct: 1,
+                explanation: "The first step should be to schedule a one-on-one meeting to understand the stakeholder's concerns. The Stakeholder Performance Domain emphasizes proactive engagement and addressing stakeholder issues promptly. Direct communication helps identify root causes of dissatisfaction and allows for timely resolution. Documenting in issue log, reducing involvement, or escalating to sponsor should come after attempting to understand and address the concerns directly with the stakeholder."
+            },
+            {
+                question: "A project manager is developing a stakeholder engagement plan for a large infrastructure project that will affect the local community. The project team has identified community groups, environmental organizations, local businesses, and government agencies as stakeholders. What is the MOST critical factor for successful stakeholder engagement in this scenario according to the Stakeholder Performance Domain?",
+                options: [
+                    "Creating detailed technical documentation for all stakeholder groups",
+                    "Establishing a two-way communication process that allows for dialogue and feedback",
+                    "Focusing primarily on government agencies since they have regulatory authority",
+                    "Minimizing stakeholder involvement to reduce potential conflicts and delays"
+                ],
+                correct: 1,
+                explanation: "Establishing a two-way communication process is the most critical factor for successful stakeholder engagement. The Stakeholder Performance Domain emphasizes that engagement must be interactive and involve exchanging information from both sides through conversations, meetings, and feedback sessions. While technical documentation, government focus, and minimizing involvement have their roles, they don't address the fundamental need for dialogue and mutual understanding that drives successful stakeholder engagement."
+            },
+            {
+                question: "During project execution, several new stakeholders emerge as the project's scope expands to include additional departments. The original stakeholder register is no longer comprehensive. According to the Stakeholder Performance Domain, what should the project manager do to address this situation?",
+                options: [
+                    "Continue with the original stakeholder register since the project is already in execution",
+                    "Update the stakeholder register immediately and conduct analysis of new stakeholders",
+                    "Wait until the next project phase to review and update stakeholder information",
+                    "Delegate stakeholder identification to team leads without updating the register"
+                ],
+                correct: 1,
+                explanation: "According to the Stakeholder Performance Domain, stakeholder identification should be done at the beginning of work and should happen regularly throughout the project lifecycle. Stakeholders come and go and can change over time, so it's essential to update the stakeholder register immediately when new stakeholders emerge and conduct proper analysis of their interests, influence, and expectations. Waiting until the next phase or continuing with outdated information risks missing critical stakeholder needs and concerns."
+            },
+            {
+                question: "A project manager is using a power-interest grid to categorize stakeholders for a technology implementation project. Which stakeholder category requires the MOST intensive engagement effort and should be managed most closely?",
+                options: [
+                    "High Power, High Interest stakeholders who can significantly impact and are highly interested in the project",
+                    "High Power, Low Interest stakeholders who have authority but minimal day-to-day involvement",
+                    "Low Power, High Interest stakeholders who are affected but have limited influence",
+                    "Low Power, Low Interest stakeholders who require minimal monitoring"
+                ],
+                correct: 0,
+                explanation: "High Power, High Interest stakeholders require the most intensive engagement effort and should be managed closely because they can significantly impact the project (high power) and are highly engaged in its outcomes (high interest). These stakeholders are crucial project champions or potential blockers, and their active involvement is essential for project success. Other stakeholder categories require different levels of engagement: Keep Satisfied (High Power, Low Interest), Keep Informed (Low Power, High Interest), and Monitor (Low Power, Low Interest)."
+            },
+            {
+                question: "A project manager has identified that two stakeholder groups have conflicting interests that could impact project decisions. The finance department wants to minimize costs, while the quality assurance department wants comprehensive testing that increases expenses. According to the Stakeholder Performance Domain, what is the BEST approach to resolve this conflict?",
+                options: [
+                    "Prioritize the finance department's position since they control the project budget",
+                    "Facilitate negotiation between the stakeholder groups to find a mutually acceptable solution",
+                    "Document the conflict and let senior management make the final decision",
+                    "Proceed with the quality team's recommendation to ensure project deliverables meet standards"
+                ],
+                correct: 1,
+                explanation: "The Stakeholder Performance Domain emphasizes managing stakeholder expectations and solving problems through negotiation and prioritization. Facilitating negotiation between stakeholder groups helps find mutually acceptable solutions that balance conflicting interests. Prioritizing one group over the other, escalating to senior management, or defaulting to one position doesn't address the root conflict or build collaborative relationships that are essential for long-term project success."
+            },
+            {
+                question: "A project manager is preparing a stakeholder engagement assessment matrix to track stakeholder engagement levels throughout the project. Which of the following represents the MOST effective engagement progression according to the Stakeholder Performance Domain?",
+                options: [
+                    "From Unaware to Resistant to Neutral to Supportive to Leading",
+                    "From Resistant to Unaware to Supportive to Neutral to Leading",
+                    "From Neutral to Unaware to Resistant to Leading to Supportive",
+                    "From Supportive to Leading to Neutral to Resistant to Unaware"
+                ],
+                correct: 0,
+                explanation: "The effective stakeholder engagement progression moves from lower to higher engagement levels: Unaware (no knowledge of project), Resistant (aware but negative), Neutral (aware but neither supportive nor resistant), Supportive (aware and supportive), and Leading (actively engaged and championing the project). This progression represents increasing stakeholder commitment and involvement, which is the goal of effective stakeholder engagement according to the Stakeholder Performance Domain."
+            },
+            {
+                question: "A project manager needs to assess stakeholder satisfaction but has limited time and resources. The project involves multiple stakeholders with varying levels of interest and influence. According to the Stakeholder Performance Domain, what is the MOST efficient approach to gauge stakeholder satisfaction?",
+                options: [
+                    "Conduct comprehensive surveys of all identified stakeholders regardless of their influence or interest",
+                    "Focus on high-power stakeholders and gather feedback through one-on-one conversations",
+                    "Only gather feedback from stakeholders who have expressed dissatisfaction",
+                    "Use social media analytics to monitor stakeholder sentiment about the project"
+                ],
+                correct: 1,
+                explanation: "According to the Stakeholder Performance Domain, stakeholders should be prioritized based on their power, influence, and interest. The most efficient approach is to focus on high-power stakeholders since they can significantly impact project outcomes. Gathering feedback through one-on-one conversations provides detailed insights and demonstrates personal commitment to stakeholder satisfaction. Comprehensive surveys of all stakeholders are resource-intensive, focusing only on dissatisfied stakeholders misses broader sentiment, and social media analytics may not provide accurate or complete feedback."
+            },
+            {
+                question: "A project manager is working on an international project with cultural differences affecting stakeholder expectations. Some stakeholders prefer direct communication, while others value indirect communication and relationship-building. According to the Stakeholder Performance Domain, what approach should the project manager adopt?",
+                options: [
+                    "Implement a standardized communication approach for all stakeholders to ensure consistency",
+                    "Tailor communication styles to match individual stakeholder cultural preferences and expectations",
+                    "Focus only on stakeholders from the project manager's own cultural background to avoid misunderstandings",
+                    "Use written communication exclusively to minimize cultural misinterpretations"
+                ],
+                correct: 1,
+                explanation: "The Stakeholder Performance Domain emphasizes personalization of interactions and adapting communication to stakeholder needs, interests, and preferences. Cultural differences significantly impact communication preferences, so tailoring communication styles to match individual stakeholder cultural preferences is essential for effective engagement. Standardized approaches ignore cultural nuances, focusing only on similar backgrounds limits stakeholder inclusion, and exclusive written communication misses relationship-building opportunities important in many cultures."
+            },
+            {
+                question: "During a project review meeting, a stakeholder expresses unrealistic expectations about project deliverables and timeline. The stakeholder has high influence and high interest in the project. According to the Stakeholder Performance Domain, what is the project manager's PRIMARY responsibility?",
+                options: [
+                    "Accept the stakeholder's expectations to maintain their support and engagement",
+                    "Manage expectations by providing realistic information and negotiating achievable outcomes",
+                    "Document the unrealistic expectations and proceed with the original project plan",
+                    "Escalate the stakeholder to senior management for expectation management"
+                ],
+                correct: 1,
+                explanation: "The project manager's primary responsibility is to manage stakeholder expectations by providing realistic information and negotiating achievable outcomes. The Stakeholder Performance Domain emphasizes that managing stakeholder expectations by setting realistic goals and addressing conflicts promptly is crucial. Accepting unrealistic expectations sets the project up for failure, documenting without addressing doesn't solve the issue, and escalating should be a last resort after attempting direct expectation management."
+            },
+            {
+                question: "A project team has completed stakeholder analysis and identified that several stakeholders have formed alliances that could either support or hinder project progress. According to the Stakeholder Performance Domain, what should the project manager do about these stakeholder alliances?",
+                options: [
+                    "Ignore the alliances and focus only on individual stakeholder management",
+                    "Analyze how stakeholder alliances might affect project outcomes and develop strategies to leverage supportive alliances",
+                    "Break up all stakeholder alliances to prevent group influence on project decisions",
+                    "Report the alliances to the project sponsor without taking further action"
+                ],
+                correct: 1,
+                explanation: "The Stakeholder Performance Domain recommends considering how stakeholders interact with each other, as they may form alliances that can help or hinder project goals. The project manager should analyze these alliances and develop strategies to leverage supportive alliances while addressing potentially harmful ones. Ignoring alliances misses important dynamics, attempting to break them up is unrealistic and counterproductive, and reporting without action doesn't address the potential impact on project success."
+            },
+            {
+                question: "A project manager is implementing a stakeholder engagement strategy but finds that some stakeholders are unwilling or reluctant to participate in project activities. According to the Stakeholder Performance Domain, what is the MOST effective long-term solution to increase their engagement?",
+                options: [
+                    "Implement mandatory participation requirements for all stakeholders",
+                    "Build trust and demonstrate the value of their involvement through early successes and visible benefits",
+                    "Replace reluctant stakeholders with more cooperative ones",
+                    "Offer financial incentives to encourage stakeholder participation"
+                ],
+                correct: 1,
+                explanation: "Building trust and demonstrating value through early successes and visible benefits is the most effective long-term solution. The Stakeholder Performance Domain emphasizes that stakeholders feel actively involved when they see the value and impact of their participation. Mandatory requirements create resistance, replacing stakeholders loses valuable knowledge and relationships, and financial incentives may create temporary compliance but not genuine engagement. Trust and demonstrated value create sustainable engagement."
+            },
+            {
+                question: "A project manager needs to develop a communication plan for diverse stakeholder groups with different information needs. Some stakeholders need detailed technical information, others require high-level business updates, and some prefer informal communications. According to the Stakeholder Performance Domain, what is the BEST approach?",
+                options: [
+                    "Create a single communication plan that provides the same information to all stakeholders",
+                    "Develop a multi-layered communication approach with different formats and detail levels for each stakeholder group",
+                    "Focus only on executive stakeholders since they have the most influence",
+                    "Use only informal communication channels to ensure accessibility for all stakeholders"
+                ],
+                correct: 1,
+                explanation: "A multi-layered communication approach with different formats and detail levels for each stakeholder group is the best approach. The Stakeholder Performance Domain emphasizes using various communication channels and tailoring information to different stakeholder types and their communication preferences. Single communication plans don't meet diverse needs, focusing only on executives excludes important stakeholders, and using only informal channels may not provide the detail or formality that some stakeholders require."
+            },
+            {
+                question: "A project manager recognizes that effective stakeholder engagement requires specific skills and competencies. According to the Stakeholder Performance Domain, which combination of skills would be MOST valuable for successful stakeholder management?",
+                options: [
+                    "Technical expertise and documentation skills",
+                    "Active listening, conflict management, negotiation, and leadership skills",
+                    "Financial management and risk assessment capabilities",
+                    "Scheduling and resource allocation expertise"
+                ],
+                correct: 1,
+                explanation: "The Stakeholder Performance Domain specifically identifies that stakeholder engagement requires soft skills such as active listening, conflict management, critical thinking, and leadership. These interpersonal skills are essential for understanding stakeholder needs, managing expectations, resolving conflicts, and building relationships. While technical, financial, and scheduling skills are important for project management, they don't directly address the core challenges of stakeholder engagement and management."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let userAnswers = [];
+        let quizStartTime;
+        let timerInterval;
+        let timeRemaining = 25 * 60; // 25 minutes in seconds
+
+        function startQuiz() {
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('quizContent').style.display = 'block';
+            document.getElementById('timerSection').style.display = 'block';
+            
+            quizStartTime = Date.now();
+            startTimer();
+            renderQuestions();
+            showQuestion(0);
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay();
+                
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    submitQuiz();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            const timerElement = document.getElementById('timer');
+            timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            if (timeRemaining <= 300) { // 5 minutes warning
+                timerElement.classList.add('warning');
+            }
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+
+            questions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-container';
+                questionDiv.id = `question-${index}`;
+                
+                let optionsHTML = '';
+                q.options.forEach((option, optIndex) => {
+                    optionsHTML += `
+                        <div class="option" onclick="selectOption(${index}, ${optIndex})">
+                            <span class="option-label">${String.fromCharCode(65 + optIndex)}.</span>
+                            <span class="option-text">${option}</span>
+                        </div>
+                    `;
+                });
+
+                questionDiv.innerHTML = `
+                    <div class="question-header">
+                        <span class="question-number">Question ${index + 1} of ${questions.length}</span>
+                    </div>
+                    <div class="question-text">${q.question}</div>
+                    <div class="options" id="options-${index}">
+                        ${optionsHTML}
+                    </div>
+                    <div class="explanation" id="explanation-${index}">
+                        <h4><i class="fas fa-lightbulb"></i> Explanation</h4>
+                        <p>${q.explanation}</p>
+                    </div>
+                `;
+
+                container.appendChild(questionDiv);
+            });
+        }
+
+        function selectOption(questionIndex, optionIndex) {
+            userAnswers[questionIndex] = optionIndex;
+            
+            const options = document.querySelectorAll(`#options-${questionIndex} .option`);
+            options.forEach((opt, idx) => {
+                opt.classList.remove('selected');
+                if (idx === optionIndex) {
+                    opt.classList.add('selected');
+                }
+            });
+        }
+
+        function showQuestion(index) {
+            document.querySelectorAll('.question-container').forEach(q => {
+                q.classList.remove('active');
+            });
+            
+            document.getElementById(`question-${index}`).classList.add('active');
+            currentQuestion = index;
+            
+            updateProgress();
+            updateNavigationButtons();
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function updateNavigationButtons() {
+            document.getElementById('prevBtn').disabled = currentQuestion === 0;
+            
+            if (currentQuestion === questions.length - 1) {
+                document.getElementById('nextBtn').style.display = 'none';
+                document.getElementById('submitBtn').style.display = 'block';
+            } else {
+                document.getElementById('nextBtn').style.display = 'block';
+                document.getElementById('submitBtn').style.display = 'none';
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                showQuestion(currentQuestion - 1);
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                showQuestion(currentQuestion + 1);
+            }
+        }
+
+        function submitQuiz() {
+            clearInterval(timerInterval);
+            
+            let correctCount = 0;
+            questions.forEach((q, index) => {
+                const options = document.querySelectorAll(`#options-${index} .option`);
+                options.forEach((opt, optIndex) => {
+                    if (optIndex === q.correct) {
+                        opt.classList.add('correct');
+                    } else if (optIndex === userAnswers[index]) {
+                        opt.classList.add('incorrect');
+                    }
+                });
+                
+                document.getElementById(`explanation-${index}`).classList.add('show');
+                
+                if (userAnswers[index] === q.correct) {
+                    correctCount++;
+                }
+            });
+
+            const percentage = (correctCount / questions.length) * 100;
+            showResults(correctCount, percentage);
+        }
+
+        function showResults(correctCount, percentage) {
+            document.getElementById('quizContent').style.display = 'none';
+            document.getElementById('timerSection').style.display = 'none';
+            
+            let performanceLevel = '';
+            let performanceClass = '';
+            
+            if (percentage >= 90) {
+                performanceLevel = 'Excellent! Outstanding Performance!';
+                performanceClass = 'excellent';
+            } else if (percentage >= 70) {
+                performanceLevel = 'Good! You Passed!';
+                performanceClass = 'good';
+            } else if (percentage >= 50) {
+                performanceLevel = 'Fair - More Study Needed';
+                performanceClass = 'fair';
+            } else {
+                performanceLevel = 'Needs Improvement';
+                performanceClass = 'poor';
+            }
+
+            let reviewHTML = '<div class="question-review"><h3>Question Review</h3>';
+            questions.forEach((q, index) => {
+                const isCorrect = userAnswers[index] === q.correct;
+                const userAnswerText = userAnswers[index] !== undefined ? q.options[userAnswers[index]] : 'Not answered';
+                const correctAnswerText = q.options[q.correct];
+                
+                reviewHTML += `
+                    <div class="review-item ${isCorrect ? 'correct' : 'incorrect'}">
+                        <strong>Question ${index + 1}:</strong> ${isCorrect ? '<i class="fas fa-check-circle" style="color: #51cf66;"></i>' : '<i class="fas fa-times-circle" style="color: #ff6b6b;"></i>'}
+                        <p><strong>Your answer:</strong> ${userAnswerText}</p>
+                        ${!isCorrect ? `<p><strong>Correct answer:</strong> ${correctAnswerText}</p>` : ''}
+                    </div>
+                `;
+            });
+            reviewHTML += '</div>';
+
+            document.getElementById('results').innerHTML = `
+                <h2><i class="fas fa-trophy"></i> Quiz Complete!</h2>
+                <div class="score-circle">
+                    <div class="score">${correctCount}/${questions.length}</div>
+                    <div class="label">${percentage.toFixed(1)}%</div>
+                </div>
+                <div class="performance-level ${performanceClass}">
+                    ${performanceLevel}
+                </div>
+                <p style="font-size: 1.1em; color: #666; margin: 20px 0;">
+                    You answered ${correctCount} out of ${questions.length} questions correctly.
+                </p>
+                ${reviewHTML}
+                <button class="btn btn-primary" onclick="location.reload()">
+                    <i class="fas fa-redo"></i> Retake Quiz
+                </button>
+            `;
+            
+            document.getElementById('results').classList.add('show');
+        }
+    </script>
+</body>
+</html>
